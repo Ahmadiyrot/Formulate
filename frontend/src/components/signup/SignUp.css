@@ -1,0 +1,21 @@
+input[type="radio"] {
+    opacity: 0;
+    width: 2rem;
+    height: 1em;
+    background-color: #fff;
+    position: absolute;
+}
+
+input[type="radio"]:checked+label .icon {
+    background-color: #3478EB;
+    color: #3478EB;
+}
+
+input[type="radio"]:checked+label {
+    color: #3478EB;
+}
+
+.radio {
+    background-color: hsl(183, 100%, 15%);
+    color: white;
+}

@@ -1,0 +1,11 @@
+.CardBottomBorder:before {
+    content: "";
+    position: absolute;
+    bottom: -26.8675px;
+    left: 0;
+    width: inherit;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 28.8675px solid #172736;
+}

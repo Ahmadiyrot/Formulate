@@ -1,0 +1,28 @@
+nav {
+    width: 50dvw;
+    /* position: absolute; */
+}
+
+.LogoNav {
+    width: 250px;
+
+}
+
+.LogoNav h2 {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    font-weight: bold;
+}
+.LogoNav img {
+    width: 75px;
+    height: auto;
+}
+.ItemListStyle{
+    color: black;
+    font-size: larger;
+  
+}
+.ItemListStyle:hover{
+    color: black !important;
+}
