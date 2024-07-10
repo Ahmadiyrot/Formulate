@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "env-cmd -f ./src/config/.env nodemon ./src/app.js",
+    "serv": "nodemon ./src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.0",
+    "validator": "^13.12.0"
+  }
+}
