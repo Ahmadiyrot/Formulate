@@ -40,8 +40,11 @@
 
 body {
   background-color: #20364B !important;
+  height: 100%;
 }
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
+
