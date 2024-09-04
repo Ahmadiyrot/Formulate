@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './SignUp.css';
 import validator from 'validator';
-import countries from './countries.json'
+import countries from './countries.json';
+import axios from 'axios';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -63,7 +64,7 @@ const SignUp = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (step === 1) {
             if (validateStepOne()) {
@@ -71,7 +72,6 @@ const SignUp = () => {
             }
         } else {
             if (validateStepTwo()) {
-                // Create final form data without repeatPassword
                 const finalFormData = {
                     fullName: formData.fullName,
                     gender: formData.gender,
@@ -80,8 +80,14 @@ const SignUp = () => {
                     password: formData.password,
                     country: formData.country
                 };
-                console.log('Final Form Data:', finalFormData);
-                // Final submission logic here
+                try {
+                    const response = await axios.post(`${process.env.REACT_APP_HOSTURL}/$"SignUp"`, finalFormData);
+                    console.log('Account created:', response.data);
+
+                } catch (error) {
+                    console.error('Error creating account:', error);
+
+                }
             }
         }
     };
@@ -230,7 +236,6 @@ const SignUp = () => {
                                                 {country}
                                             </option>
                                         ))}
-
                                     </select>
                                 </div>
                                 {errors.country && <p className="text-danger">{errors.country}</p>}
@@ -249,7 +254,6 @@ const SignUp = () => {
                             <span className="p-2">or</span>
                             <span className="opacity-25" style={{ backgroundColor: "black", width: "100%", height: "2px" }} />
                         </div>
-
                     </form>
                     <div className="d-flex justify-content-center">
                         <button className="btn btn-outline-secondary d-flex align-items-center">
@@ -269,6 +273,6 @@ const SignUp = () => {
             </div>
         </div>
     );
-}
+};
 
 export default SignUp;

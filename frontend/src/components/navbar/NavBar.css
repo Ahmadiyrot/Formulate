@@ -1,28 +1,29 @@
-nav {
-    width: 50dvw;
-    /* position: absolute; */
-}
 
-.LogoNav {
-    width: 250px;
 
-}
-
-.LogoNav h2 {
-    display: flex;
-    align-content: center;
-    flex-wrap: wrap;
-    font-weight: bold;
-}
-.LogoNav img {
+.logo-img {
     width: 75px;
     height: auto;
 }
-.ItemListStyle{
+
+.navbar-brand h2 {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.ItemListStyle {
     color: black;
     font-size: larger;
-  
 }
-.ItemListStyle:hover{
+
+.ItemListStyle:hover {
     color: black !important;
+}
+
+
+@media (max-width: 768px) {
+    .navbar-brand img {
+        display: none;
+    }
 }

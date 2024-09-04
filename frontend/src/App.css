@@ -48,3 +48,13 @@ html {
   height: 100%;
 }
 
+@media (max-width: 768px) {
+  .welcome-card-img {
+      display: none;
+  }
+}
+@media (max-width: 1200px) {
+  .arrow {
+      display: none;
+  }
+}
