@@ -5,7 +5,11 @@ import "./DB/mongoose.js";
 import accountRouter from "./routers/accountRouter.js"
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: process.env.REACT_URL,
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
 
 app.use(express.json())
 app.use(cookieParser())

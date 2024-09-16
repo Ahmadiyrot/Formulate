@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import mongooseUniqueValidator from "mongoose-unique-validator"; 
 
 const accountSchema = new mongoose.Schema({
     userName: {
@@ -18,10 +19,9 @@ const accountSchema = new mongoose.Schema({
         trim: true,
         validate(value) {
             if (!validator.isEmail(value)) {
-                throw new Error('email must be a provided and an actual email')
+                throw new Error('Email must be valid');
             }
         },
-        trim: true,
         lowercase: true
     },
     dateOfBirth: {
@@ -39,7 +39,7 @@ const accountSchema = new mongoose.Schema({
         minLength: 7,
         validate(value) {
             if (value.toLowerCase().includes("password")) {
-                throw new Error('password cant have password')
+                throw new Error('Password cannot contain "password"');
             }
         }
     },
@@ -56,29 +56,34 @@ const accountSchema = new mongoose.Schema({
     timestamps: true
 });
 
+
+accountSchema.plugin(mongooseUniqueValidator, { message: '{PATH} must be unique' });
+
+
 accountSchema.statics.findByCredentials = async (email, password) => {
-    const user = await Account.findOne({ email })
+    const user = await Account.findOne({ email });
 
     if (!user) {
-        throw new Error('Unable to login')
+        throw new Error('Invalid email or password');
     }
 
-    const isMatch = await bcrypt.compare(password, user.password)
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-        throw new Error('Unable to login')
+        throw new Error('Invalid email or password');
     }
 
-    return user
-}
+    return user;
+};
+
 
 accountSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '20s' });
-    user.tokens = user.tokens.concat({ token: token });
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '7d' }); 
+    user.tokens = user.tokens.concat({ token });
     await user.save();
-    return token
-}
+    return token;
+};
 
 
 accountSchema.pre("save", async function (next) {
@@ -86,20 +91,22 @@ accountSchema.pre("save", async function (next) {
     if (user.isModified("password")) {
         user.password = await bcrypt.hash(user.password, 8);
     }
-    next()
-})
+    next();
+});
+
 
 accountSchema.methods.toJSON = function () {
-    const user = this
-    const userObject = user.toObject()
+    const user = this;
+    const userObject = user.toObject();
 
-    delete userObject.password
-    delete userObject.tokens
-    delete userObject.country
-    delete userObject.gender
-    return userObject
-}
+    delete userObject.password;
+    delete userObject.tokens;
+    delete userObject.country;
+    delete userObject.gender;
+    return userObject;
+};
+
 
 const Account = mongoose.model('Account', accountSchema);
 
-export default Account
+export default Account;

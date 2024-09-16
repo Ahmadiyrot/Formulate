@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import './SignUp.css';
 import validator from 'validator';
 import countries from './countries.json';
-import axios from 'axios';
+// import axios from 'axios';
+import { saveDocument } from "../../api/API's";
+// import { findAccount } from '../../api/accountApi';
+import toast from 'react-hot-toast';
+import { useNavigate  } from "react-router-dom";
 
 const SignUp = () => {
+
     const [formData, setFormData] = useState({
         fullName: '',
         gender: '',
@@ -18,6 +23,7 @@ const SignUp = () => {
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,12 +35,12 @@ const SignUp = () => {
 
     const validateStepOne = () => {
         const newErrors = {};
-        const nameRegex = /^[a-zA-Z\s]+$/;
+        const nameRegex = /^[A-z][A-z0-9-_]{3,23}$/;
         const currentDate = new Date();
         const selectedDate = new Date(formData.birthDate);
 
         if (!nameRegex.test(formData.fullName)) {
-            newErrors.fullName = 'Full name must only contain letters and spaces';
+            newErrors.fullName = 'Full name must only contain letters and no spaces';
         }
 
         if (!formData.birthDate || selectedDate >= currentDate) {
@@ -49,6 +55,7 @@ const SignUp = () => {
         const newErrors = {};
 
         if (!validator.isEmail(formData.email)) {
+
             newErrors.email = 'Invalid email address';
         }
 
@@ -66,6 +73,7 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         if (step === 1) {
             if (validateStepOne()) {
                 setStep(2);
@@ -73,29 +81,47 @@ const SignUp = () => {
         } else {
             if (validateStepTwo()) {
                 const finalFormData = {
-                    fullName: formData.fullName,
+                    userName: formData.fullName,
                     gender: formData.gender,
-                    birthDate: formData.birthDate,
+                    dateOfBirth: formData.birthDate,
                     email: formData.email,
                     password: formData.password,
                     country: formData.country
                 };
+    
                 try {
-                    const response = await axios.post(`${process.env.REACT_APP_HOSTURL}/$"SignUp"`, finalFormData);
-                    console.log('Account created:', response.data);
-
+                    const response = await saveDocument("SignUp", finalFormData);
+                    console.log('Full response:', response);
+    
+                    // Check if user and token exist to confirm account creation
+                    if (response.user && response.token) {
+                        toast.success("Account created");
+                        navigate('/login');
+                    } else {
+                        toast.error("Email or Username already taken");
+                        setTimeout(()=>{
+                            window.location.reload(true);
+                        }, 2000);
+                    }
+    
                 } catch (error) {
-                    console.error('Error creating account:', error);
-
+                    console.error(error);
+                    toast.error("Failed to create an account. Please try again later.");
                 }
             }
         }
     };
+    
+
+
+
 
     return (
+
         <div className="d-flex w-100 justify-content-center align-items-center h-100 pt-5 mt-5">
-            <div className="d-flex justify-content-center w-50 bg-white rounded-4">
-                <div style={{ width: "45%" }}>
+
+            <div className="d-flex justify-content-center w-50 bg-white rounded-4 login-container">
+                <div style={{ width: "75%" }}>
                     <div style={{ color: "black" }} className="d-flex justify-content-center align-items-center flex-column">
                         <p className="h1">Sign up</p>
                         <p className="h6">We need you to help us with some basic information to create your account.</p>
@@ -113,7 +139,7 @@ const SignUp = () => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        style={{ width: "inherit" }}
+                                        style={{ width: "50%" }}
                                         aria-describedby="nameHelp"
                                         name="fullName"
                                         value={formData.fullName}
@@ -175,7 +201,7 @@ const SignUp = () => {
                                     <input
                                         type="email"
                                         className="form-control"
-                                        style={{ width: "inherit" }}
+                                        style={{ width: "65%" }}
                                         aria-describedby="emailHelp"
                                         name="email"
                                         value={formData.email}
@@ -185,7 +211,7 @@ const SignUp = () => {
                                 {errors.email && <p className="text-danger">{errors.email}</p>}
                                 <div className="d-flex justify-content-between align-items-center pe-2 pt-5">
                                     <span style={{ fontWeight: "500" }}>Password</span>
-                                    <div className="input-group">
+                                    <div className="input-group" style={{ width: "65%" }}>
                                         <input
                                             type={showPassword ? "text" : "password"}
                                             className="form-control"
@@ -204,8 +230,9 @@ const SignUp = () => {
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center pe-2 pt-5">
                                     <span style={{ fontWeight: "500" }}>Repeat Password</span>
-                                    <div className="input-group">
+                                    <div className="input-group" style={{ width: "65%" }}>
                                         <input
+
                                             type={showRepeatPassword ? "text" : "password"}
                                             className="form-control"
                                             name="repeatPassword"
