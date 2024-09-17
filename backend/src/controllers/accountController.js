@@ -12,6 +12,17 @@ const createAccount = async (req, res) => {
     }
 }
 
+const signInAccount = async (req, res) => {
+    try {
+        console.log(req.body)
+        const user = await Account.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken();
+        res.status(200).send({ user, token: token });
+    } catch (error) {
+        res.status(400).send()
+    }
+}
+
 const getAccountByEmail = async (req, res) => {
     console.log(req)
     try {
@@ -26,5 +37,6 @@ const getAccountByEmail = async (req, res) => {
 }
 export default {
     createAccount,
-    getAccountByEmail
+    getAccountByEmail,
+    signInAccount
 }
