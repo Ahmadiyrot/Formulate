@@ -1,19 +1,27 @@
 import './Login.css'
 
-import { useRef, useState, useEffect, useContext } from 'react';
-import AuthContext from '../../context/AuthProvider';
+import { useRef, useState, useEffect } from 'react';
+import useAuth from '../../hooks/useAuth';
 import axios from '../../api/axios';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+
 const LOGIN_URL = '/signIn';
 
 const Login = () => {
-    const { setAuth } = useContext(AuthContext)
+    const { setAuth } = useAuth()
+    const [cookies, setCookie] = useCookies(['jwt'])
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+
     const userRef = useRef();
     const errRef = useRef();
 
     const [user, setUser] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+
 
     useEffect(() => {
         userRef.current.focus();
@@ -36,11 +44,13 @@ const Login = () => {
 
             )
             console.log(response?.data)
-            const accessToken = response?.data?.accessToken;
+            const accessToken = response?.data?.token.refreshToken;
+
             setAuth({ user, pwd, accessToken })
+            setCookie('jwt', accessToken, { path: '/', maxAge: 86400, secure: true })
             setUser('');
             setPwd('');
-            setSuccess(true);
+            navigate(from, { replace: true });
 
         } catch (error) {
             console.log(error)

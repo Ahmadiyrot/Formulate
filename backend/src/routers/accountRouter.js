@@ -4,7 +4,8 @@ const router = new express.Router()
 
 router.post("/SignUp", accountController.createAccount)
 
-router.get('/find/email/:email', accountController.getAccountByEmail);
 
 router.post('/signIn', accountController.signInAccount);
+
+router.get("/refresh", accountController.refreshAccount);
 export default router

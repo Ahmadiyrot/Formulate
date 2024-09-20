@@ -5,18 +5,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthProvider';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <AuthProvider>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
-      <App />
+      <CookiesProvider>
+        <Toaster />
+        <Routes>
+          <Route path="/*" element={<App />} />
+        </Routes>
+      </CookiesProvider>
     </AuthProvider>
-  </React.StrictMode>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

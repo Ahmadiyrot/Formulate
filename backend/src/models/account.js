@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import mongooseUniqueValidator from "mongoose-unique-validator"; 
+import mongooseUniqueValidator from "mongoose-unique-validator";
 
 const accountSchema = new mongoose.Schema({
     userName: {
@@ -79,10 +79,11 @@ accountSchema.statics.findByCredentials = async (email, password) => {
 
 accountSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '7d' }); 
-    user.tokens = user.tokens.concat({ token });
+    const accessToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '20m' }); 
+    const refreshToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_REFRESH_SECRET, { expiresIn: '60m' });
+    user.tokens = user.tokens.concat({ token: refreshToken });
     await user.save();
-    return token;
+    return { accessToken, refreshToken };
 };
 
 
