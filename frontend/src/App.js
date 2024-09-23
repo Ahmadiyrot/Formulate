@@ -13,6 +13,8 @@ import ResponseCard from './components/responses/Responses.js';
 import Layout from './components/layout/Layout.js';
 import RequireAuth from './components/RequireAuth/RequireAuth.js';
 import PersistLogin from './components/persistlogin/PersistLogin.js';
+import LoadingPage from "./components/loadingpage/LoadingPage";
+import CreateForms from "./components/forms/CreateForms.js"
 
 
 
@@ -21,8 +23,8 @@ function App() {
     <div className='App'>
       <Routes>
         <Route path='/' element={<Layout />}>
-
-
+          <Route path='loading' element={<LoadingPage />} />
+          <Route path='/CreateForms' element={<CreateForms />} />
           <Route path='*' element={<ErrorPage />} />
           <Route path='/SignUp' element={<SignUp />} />
           <Route path='/Login' element={<Login />} />

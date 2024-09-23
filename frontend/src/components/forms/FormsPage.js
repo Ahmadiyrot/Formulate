@@ -23,11 +23,11 @@ const FormsPage = (props) => {
                 {/* First Column (Small) */}
                 <div className="col-2 ">
                     <div className="p-3 border bg-light">
-                        
+
                     </div>
                 </div>
 
-               
+
                 <div className="col-8">
                     <div className="d-flex flex-wrap justify-content-center">
                         {Array(7).fill().map((_, index) => (

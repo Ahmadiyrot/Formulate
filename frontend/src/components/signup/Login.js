@@ -3,7 +3,7 @@ import './Login.css'
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../../hooks/useAuth';
 import axios from '../../api/axios';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 const LOGIN_URL = '/signIn';
@@ -26,6 +26,12 @@ const Login = () => {
     useEffect(() => {
         userRef.current.focus();
     }, [])
+
+    useEffect(() => {
+        if (cookies.flag) {
+            navigate('/')
+        }
+    }, [cookies.flag, navigate]);
 
     useEffect(() => {
         setErrMsg('')
@@ -57,7 +63,7 @@ const Login = () => {
             if (!error.response) {
                 setErrMsg('No server response ')
             } else if (error.response?.status === 400) {
-                setErrMsg('Missing Username or Password')
+                setErrMsg('Invalid email or password')
             } else if (error.response?.status === 401) {
                 setErrMsg('Unauthorized')
             } else {
@@ -75,7 +81,7 @@ const Login = () => {
             <div className="d-flex justify-content-center w-50 bg-white rounded-4 login-container">
                 <div style={{ width: "75%" }}>
                     <div style={{ color: "black" }} className="d-flex justify-content-center align-items-center flex-column pt-3">
-                        <p ref={errRef} style={{ color: "red", fontSize: "20px" }} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+
                         <p className="h1">Login</p>
                         <p className="h6">Please provide your login information to log in.</p>
                     </div>
@@ -92,6 +98,7 @@ const Login = () => {
                                 value={user}
                                 required
                             />
+                            <p ref={errRef} style={{ color: "#ff000071", fontSize: "15px" }} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                         </div>
                         <div className="pt-3" style={{ fontWeight: "bold" }}>
                             <label htmlFor='password'>Password</label>
@@ -103,6 +110,7 @@ const Login = () => {
                                 value={pwd}
                                 required
                             />
+                            <p ref={errRef} style={{ color: "#ff000071", fontSize: "15px" }} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                         </div>
                         <div className="pt-4">
                             <button type="submit" className="btn w-100 rounded-5" style={{ backgroundColor: "#FFBF00", fontWeight: "bold" }}>Login</button>

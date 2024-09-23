@@ -8,4 +8,5 @@ router.post("/SignUp", accountController.createAccount)
 router.post('/signIn', accountController.signInAccount);
 
 router.get("/refresh", accountController.refreshAccount);
+
 export default router

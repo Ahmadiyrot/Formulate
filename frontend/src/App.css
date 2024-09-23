@@ -50,11 +50,12 @@ html {
 
 @media (max-width: 768px) {
   .welcome-card-img {
-      display: none;
+    display: none;
   }
 }
+
 @media (max-width: 1200px) {
   .arrow {
-      display: none;
+    display: none;
   }
 }

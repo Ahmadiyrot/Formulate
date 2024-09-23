@@ -54,3 +54,32 @@
 .responsesButton:hover {
     transform: scale(1.08);
 }
+
+.MenuSize {
+    width: 550px;
+    padding: 0;
+}
+
+.menuContain {
+    flex-direction: column;
+}
+
+@media (max-width: 1150px) {
+    .MenuSize {
+        width: auto !important;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .menuContain {
+        flex-direction: row;
+    }
+}
+
+.textArea-Textinput {
+    border-color: #E5E8EA;
+    border-width: 2px;
+    padding-right: 30px;
+}
