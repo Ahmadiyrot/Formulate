@@ -6,7 +6,7 @@ const DroppableFormArea = ({ formElements, handleRemoveElement, renderFormElemen
         <Droppable droppableId="droppable-area">
             {(provided) => (
                 <div
-                    className="col-8 bg-dark-subtle"
+                    className="col-6 bg-dark-subtle"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     style={{ minHeight: '500px', padding: '20px', minWidth: '700px' }}

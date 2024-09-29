@@ -1,31 +1,36 @@
 import { useDropzone } from 'react-dropzone';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
-    const [uploadedFile, setUploadedFile] = useState(null);
+const QWithImg = ({ inputValue, setInputValue, uploadedFile, setUploadedFile, dropzoneEnabled }) => {
     const [preview, setPreview] = useState(null);
+
+    useEffect(() => {
+        if (uploadedFile) {
+            if (uploadedFile.type.startsWith('image/')) {
+                const imageUrl = URL.createObjectURL(uploadedFile);
+                setPreview(imageUrl);
+            } else {
+                setPreview(null);
+            }
+        } else {
+            setPreview(null);
+        }
+    }, [uploadedFile]);
 
     const clearInput = () => {
         setInputValue('');
+        setUploadedFile(null);
     };
 
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
         setUploadedFile(file);
-
-        if (file.type.startsWith('image/')) {
-            const imageUrl = URL.createObjectURL(file);
-            setPreview(imageUrl);
-        } else {
-            setPreview(null);
-        }
     };
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: {
             'image/png': ['.png'],
             'image/jpeg': ['.jpg'],
-            'application/pdf': ['.pdf'],
         },
         onDrop,
         multiple: false,
@@ -34,7 +39,6 @@ const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
 
     return (
         <div className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column align-items-center row-gap-2 rounded-3" style={{ backgroundColor: "#fff", padding: "5px" }}>
-
             {uploadedFile ? (
                 preview ? (
                     <div className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
@@ -57,7 +61,6 @@ const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
                         />
                     </div>
                 ) : (
-
                     <div className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
                         style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px", position: 'relative' }}>
                         <i className="bi bi-file-earmark-pdf" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
@@ -76,13 +79,12 @@ const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
                     </div>
                 )
             ) : (
-
                 <div {...getRootProps()}
                     className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
                     style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px" }}>
                     <input {...getInputProps()} />
                     <i className="bi bi-file-image" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
-                    <span>Upload Image or PDF</span>
+                    <span>Upload Image</span>
                 </div>
             )}
 
@@ -106,6 +108,7 @@ const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
                     onClick={clearInput}
                 />
             </div>
+
             <div className='position-relative w-100'>
                 <textarea
                     className='w-100 p-1 ps-2 textArea-Textinput rounded-2'
@@ -133,4 +136,4 @@ const MultiAnswerQ = ({ inputValue, setInputValue, dropzoneEnabled  }) => {
     );
 };
 
-export default MultiAnswerQ;
+export default QWithImg;

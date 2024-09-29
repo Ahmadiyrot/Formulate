@@ -4,23 +4,22 @@ import DraggableLibrary from './questions/DraggableLibrary';
 import DroppableFormArea from './questions/DroppableFormArea';
 import TextAreaQ from './questions/TextAreaQ';
 import RatingQ from './questions/RatingQ';
-import MultiAnswerQ from './questions/MultiAnswerQ';
+import QWithImg from './questions/QWithImg';
+import QTrueOrFalse from './questions/QTrueOrFalse';
+import QWithColorPicker from './questions/QWithColorPicker.js'
+import QWithTextAndImgAnswer from './questions/QWithTextAndImgAnswer.js';
+import QWithImgAnswer from './questions/QWithImgAnswer.js';
+import QWithMultiAnswer from './questions/QWithMultiAnswer.js';
 
 const CreateForms = () => {
     const [formElements, setFormElements] = useState([]);
 
     const handleOnDragEnd = (result) => {
-        console.log("Drag event:", result);
         const { destination, source } = result;
 
         if (!destination) {
-            console.log("Dropped outside the droppable area.");
             return;
         }
-
-        console.log("Dropped in:", destination.droppableId);
-        console.log("Source:", source); // Log the entire source object
-        console.log("Source draggableId:", result.draggableId); // Use result.draggableId instead
 
         if (source.droppableId === destination.droppableId && destination.droppableId === 'droppable-area') {
             const reorderedElements = Array.from(formElements);
@@ -28,28 +27,48 @@ const CreateForms = () => {
             reorderedElements.splice(destination.index, 0, movedElement);
             setFormElements(reorderedElements);
         } else if (destination.droppableId === 'droppable-area') {
-            const draggableId = result.draggableId; // Get the draggableId directly from the result
+            const draggableId = result.draggableId;
 
             if (draggableId === 'TextAreaQ') {
-                console.log("Adding TextAreaQ element to the form");
                 setFormElements(prev => [
                     ...prev,
                     { id: `TextAreaQ-${Date.now()}`, type: 'TextAreaQ', inputValue: '' }
                 ]);
             } else if (draggableId === 'RatingQ') {
-                console.log("Adding RatingQ element to the form");
                 setFormElements(prev => [
                     ...prev,
                     { id: `RatingQ-${Date.now()}`, type: 'RatingQ', inputValue: '' }
                 ]);
-            } else if (draggableId === 'MultiAnswerQ') {
-                console.log("Adding MultiRatingQ element to the form");
+            } else if (draggableId === 'QWithImg') {
                 setFormElements(prev => [
                     ...prev,
-                    { id: `MultiRatingQ-${Date.now()}`, type: 'MultiAnswerQ', inputValue: '' }
+                    { id: `QWithImg-${Date.now()}`, type: 'QWithImg', inputValue: '', uploadedFile: null }
                 ]);
-            } else {
-                console.log("Unknown draggableId during drop.");
+            } else if (draggableId === 'QTrueOrFalse') {
+                setFormElements(prev => [
+                    ...prev,
+                    { id: `QTrueOrFalse-${Date.now()}`, type: 'QTrueOrFalse', inputValue: '', uploadedFile: null }
+                ]);
+            } else if (draggableId === 'QWithColorPicker') {
+                setFormElements(prev => [
+                    ...prev,
+                    { id: `QWithColorPicker-${Date.now()}`, type: 'QWithColorPicker', inputValue: '', uploadedFile: null }
+                ]);
+            } else if (draggableId === 'QWithTextAndImgAnswer') {
+                setFormElements(prev => [
+                    ...prev,
+                    { id: `QWithTextAndImgAnswer-${Date.now()}`, type: 'QWithTextAndImgAnswer', inputValue: '', uploadedFile: null }
+                ]);
+            } else if (draggableId === 'QWithImgAnswer') {
+                setFormElements(prev => [
+                    ...prev,
+                    { id: `QWithImgAnswer-${Date.now()}`, type: 'QWithImgAnswer', inputValue: '', uploadedFile: null }
+                ]);
+            } else if (draggableId === 'QWithMultiAnswer') {
+                setFormElements(prev => [
+                    ...prev,
+                    { id: `QWithMultiAnswer-${Date.now()}`, type: 'QWithMultiAnswer', inputValue: '', uploadedFile: null }
+                ]);
             }
         }
     };
@@ -64,29 +83,65 @@ const CreateForms = () => {
                 return (
                     <TextAreaQ
                         inputValue={element.inputValue}
-                        setInputValue={(value) => handleInputChange(element.id, value, 'inputValue')}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
                     />
                 );
             case 'RatingQ':
                 return (
                     <RatingQ
                         inputValue={element.inputValue}
-                        setInputValue={(value) => handleInputChange(element.id, value, 'inputValue')}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
                     />
                 );
-            case 'MultiAnswerQ':
+            case 'QWithImg':
                 return (
-                    <MultiAnswerQ
+                    <QWithImg
                         inputValue={element.inputValue}
                         setInputValue={(value) => handleInputChange(element.id, value)}
-                        dropzoneEnabled={true} 
+                        uploadedFile={element.uploadedFile} // Pass uploaded file
+                        setUploadedFile={(file) => handleFileChange(element.id, file)}
+                        dropzoneEnabled={true}
+                    />
+                );
+            case 'QTrueOrFalse':
+                return (
+                    <QTrueOrFalse
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                    />
+                );
+            case 'QWithColorPicker':
+                return (
+                    <QWithColorPicker
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                    />
+                );
+            case 'QWithTextAndImgAnswer':
+                return (
+                    <QWithTextAndImgAnswer
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                    />
+                );
+            case 'QWithImgAnswer':
+                return (
+                    <QWithImgAnswer
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                    />
+                );
+            case 'QWithMultiAnswer':
+                return (
+                    <QWithMultiAnswer
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
                     />
                 );
             default:
                 return null;
         }
     };
-
 
     const handleInputChange = (id, newValue) => {
         setFormElements(prev =>
@@ -96,21 +151,51 @@ const CreateForms = () => {
         );
     };
 
+    const handleFileChange = (id, newFile) => {
+        setFormElements(prev =>
+            prev.map(element =>
+                element.id === id ? { ...element, uploadedFile: newFile } : element
+            )
+        );
+    };
+
+    const handleFormSubmit = () => {
+        // Gather all form data from formElements state
+        console.log('Collected form data:', formElements);
+    };
+
     return (
         <DragDropContext onDragEnd={handleOnDragEnd}>
             <div className="container-fluid d-flex flex-column">
-                <div className="row d-flex align-items-start">
-                    <DroppableFormArea
-                        formElements={formElements}
-                        handleRemoveElement={handleRemoveElement}
-                        renderFormElement={renderFormElement}
-                    />
-                    <div className="col-4 h-100">
-                        <DraggableLibrary />
+                <div className="row d-flex justify-content-center">
+                    <div className="col-6 d-flex justify-content-center">
+                        <DroppableFormArea
+                            formElements={formElements}
+                            handleRemoveElement={handleRemoveElement}
+                            renderFormElement={renderFormElement}
+                        />
                     </div>
+                    <div className="col-6 d-flex justify-content-center">
+                        <div className='overflow-x-hidden p-1 rounded-2'
+                            style={{
+                                width: "70%",
+                                backgroundColor: "#acacac87",
+                                overflowY: "overlay",
+                                borderStyle: "dashed",
+                                borderColor: "#acacac87"
+                            }}>
+                            <DraggableLibrary />
+                        </div>
+                    </div>
+
                 </div>
+
+                <button onClick={handleFormSubmit} className="btn btn-primary mt-3">
+                    Submit Form
+                </button>
             </div>
         </DragDropContext>
+
     );
 };
 

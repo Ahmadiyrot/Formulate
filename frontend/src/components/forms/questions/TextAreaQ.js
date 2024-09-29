@@ -1,4 +1,3 @@
-// TextAreaQ.js
 import React from 'react';
 
 const TextAreaQ = ({ inputValue, setInputValue }) => {
