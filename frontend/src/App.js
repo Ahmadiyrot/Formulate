@@ -24,14 +24,14 @@ function App() {
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route path='loading' element={<LoadingPage />} />
-          <Route path='/CreateForms' element={<CreateForms />} />
+
           <Route path='*' element={<ErrorPage />} />
           <Route path='/SignUp' element={<SignUp />} />
           <Route path='/Login' element={<Login />} />
           <Route element={<PersistLogin />}>
             <Route path='/' element={<HomePage />} />
             <Route element={<RequireAuth />}>
-
+              <Route path='/CreateForms' element={<CreateForms />} />
               <Route path='/FormsPage' element={<FormsPage />} />
               <Route path="/Responses" element={<ResponseCard />} />
 

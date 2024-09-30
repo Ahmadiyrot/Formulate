@@ -7,7 +7,7 @@ const TextAreaQ = ({ inputValue, setInputValue }) => {
 
     return (
         <div className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3" style={{ backgroundColor: "#fff", padding: "5px" }}>
-            <div className="position-relative w-100">
+            <div className="position-relative w-100 pb-2 pt-2">
                 <input
                     type="text"
                     className="w-100 ps-2 rounded-2 textArea-Textinput"
@@ -27,9 +27,9 @@ const TextAreaQ = ({ inputValue, setInputValue }) => {
                     onClick={clearInput}
                 />
             </div>
-            <div className='position-relative w-100'>
+            <div className='position-relative w-100 pb-2 pt-2'>
                 <textarea
-                    className='w-100 p-1 ps-2 textArea-Textinput rounded-2'
+                    className='w-100 p-1 ps-2 textArea-Textinput rounded-2 '
                     disabled
                     placeholder='Answer'
                     style={{

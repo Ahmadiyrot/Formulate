@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import TextAreaQ from './TextAreaQ';
 import RatingQ from './RatingQ';
@@ -10,142 +10,180 @@ import QWithImgAnswer from './QWithImgAnswer.js';
 import QWithMultiAnswer from './QWithMultiAnswer.js';
 
 const DraggableLibrary = () => {
+    const sectionsRef = useRef([]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sectionsRef.current.forEach(section => {
+            if (section) {
+                observer.observe(section);
+            }
+        });
+
+        return () => {
+            sectionsRef.current.forEach(section => {
+                if (section) {
+                    observer.unobserve(section);
+                }
+            });
+        };
+    }, []);
+
+    const assignRef = (el, index) => {
+        sectionsRef.current[index] = el;
+    };
+
     return (
         <Droppable droppableId="draggable-area" isDropDisabled={true}>
             {(provided) => (
                 <div
                     className="d-flex justify-content-center flex-column"
                     ref={provided.innerRef}
-                    {...provided.droppableProps} >
+                    {...provided.droppableProps}
+                >
                     <Draggable draggableId="TextAreaQ" index={0}>
-                        {(provided) => {
-                            console.log("Rendering TextAreaQ draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <TextAreaQ inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 0);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <TextAreaQ inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
 
                     <Draggable draggableId="RatingQ" index={1}>
-                        {(provided) => {
-                            console.log("Rendering RatingQ draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <RatingQ inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 1);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <RatingQ inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QWithImg" index={2}>
-                        {(provided) => {
-                            console.log("Rendering QWithImg draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QWithImg inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 2);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QWithImg inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QTrueOrFalse" index={3}>
-                        {(provided) => {
-                            console.log("Rendering QTrueOrFalse draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QTrueOrFalse inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 3);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QTrueOrFalse inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QWithColorPicker" index={4}>
-                        {(provided) => {
-                            console.log("Rendering QWithColorPicker draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QWithColorPicker inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 4);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QWithColorPicker inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QWithTextAndImgAnswer" index={5}>
-                        {(provided) => {
-                            console.log("Rendering QWithTextAndImgAnswer draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QWithTextAndImgAnswer inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 5);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QWithTextAndImgAnswer inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QWithImgAnswer" index={6}>
-                        {(provided) => {
-                            console.log("Rendering QWithImgAnswer draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QWithImgAnswer inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 6);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QWithImgAnswer inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     <Draggable draggableId="QWithMultiAnswer" index={7}>
-                        {(provided) => {
-                            console.log("Rendering QWithMultiAnswer draggable");
-                            return (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="mb-3"
-                                    style={{ ...provided.draggableProps.style }}
-                                >
-                                    <QWithMultiAnswer inputValue="" setInputValue={() => { }} />
-                                </div>
-                            );
-                        }}
+                        {(provided) => (
+                            <div
+                                ref={(el) => {
+                                    provided.innerRef(el);
+                                    assignRef(el, 7);
+                                }}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="mb-2 fade-in"
+                                style={{ ...provided.draggableProps.style }}
+                            >
+                                <QWithMultiAnswer inputValue="" setInputValue={() => { }} />
+                            </div>
+                        )}
                     </Draggable>
+
                     {provided.placeholder}
                 </div>
             )}

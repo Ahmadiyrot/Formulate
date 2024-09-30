@@ -11,6 +11,7 @@ import QWithTextAndImgAnswer from './questions/QWithTextAndImgAnswer.js';
 import QWithImgAnswer from './questions/QWithImgAnswer.js';
 import QWithMultiAnswer from './questions/QWithMultiAnswer.js';
 
+
 const CreateForms = () => {
     const [formElements, setFormElements] = useState([]);
 
@@ -160,7 +161,7 @@ const CreateForms = () => {
     };
 
     const handleFormSubmit = () => {
-        // Gather all form data from formElements state
+
         console.log('Collected form data:', formElements);
     };
 
@@ -175,15 +176,19 @@ const CreateForms = () => {
                             renderFormElement={renderFormElement}
                         />
                     </div>
-                    <div className="col-6 d-flex justify-content-center">
+                    <div className="col-6 d-flex justify-content-center align-content-center flex-wrap" style={{ height: "90vh" }}>
                         <div className='overflow-x-hidden p-1 rounded-2'
                             style={{
                                 width: "70%",
+                                height: "85vh",
                                 backgroundColor: "#acacac87",
-                                overflowY: "overlay",
                                 borderStyle: "dashed",
-                                borderColor: "#acacac87"
-                            }}>
+                                borderColor: "#acacac87",
+                                overflowY: "scroll",
+                                position: "relative"
+                            }}
+
+                        >
                             <DraggableLibrary />
                         </div>
                     </div>

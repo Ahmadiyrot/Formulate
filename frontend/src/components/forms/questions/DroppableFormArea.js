@@ -6,10 +6,18 @@ const DroppableFormArea = ({ formElements, handleRemoveElement, renderFormElemen
         <Droppable droppableId="droppable-area">
             {(provided) => (
                 <div
-                    className="col-6 bg-dark-subtle"
+                    className="col-6 "
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    style={{ minHeight: '500px', padding: '20px', minWidth: '700px' }}
+                    style={{
+                        minHeight: '500px',
+                        padding: '20px',
+                        minWidth: '700px',
+                        borderRadius: '8px',
+                        backgroundColor: '#dee2e6',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        marginTop:"20px"
+                    }}
                 >
                     {formElements.map((element, index) => {
                         console.log('Rendering element:', element);
@@ -24,24 +32,42 @@ const DroppableFormArea = ({ formElements, handleRemoveElement, renderFormElemen
                                         style={{
                                             ...provided.draggableProps.style,
                                             marginBottom: '20px',
+                                            padding: '15px',
+                                            borderRadius: '8px',
+                                            backgroundColor: '#ffffff',
+                                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                                             position: 'relative',
                                             display: 'flex',
-                                            flexDirection: 'column'
+                                            flexDirection: 'column',
+                                            transition: 'box-shadow 0.3s ease-in-out',
                                         }}
+                                        onMouseEnter={(e) =>
+                                            (e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)')
+                                        }
+                                        onMouseLeave={(e) =>
+                                            (e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)')
+                                        }
                                     >
                                         {renderFormElement(element)}
 
                                         <button
                                             onClick={() => handleRemoveElement(element.id)}
                                             style={{
-                                                backgroundColor: 'red',
+                                                backgroundColor: '#dc3545',
                                                 color: 'white',
                                                 border: 'none',
                                                 borderRadius: '4px',
-                                                padding: '5px 10px',
+                                                padding: '6px 12px',
                                                 cursor: 'pointer',
-                                                width: '100px'
+                                                alignSelf: 'flex-end',
+                                                transition: 'background-color 0.3s ease',
                                             }}
+                                            onMouseEnter={(e) =>
+                                                (e.currentTarget.style.backgroundColor = '#c82333')
+                                            }
+                                            onMouseLeave={(e) =>
+                                                (e.currentTarget.style.backgroundColor = '#dc3545')
+                                            }
                                         >
                                             Remove
                                         </button>
