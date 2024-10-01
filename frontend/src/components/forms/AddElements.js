@@ -15,6 +15,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { storage } from '../../firebaseConfig.js';
 import { ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL } from "firebase/storage";
+import axios from '../../api/axios.js';
 
 
 
@@ -173,44 +175,40 @@ const AddElements = () => {
     const handleFileUpload = async (file) => {
         if (!file) return;
 
-        const fileRef = ref(storage, `uploads/${file.name}`);
-        console.log(fileRef)
-
+        const fileRef = ref(storage, `${id}/${file.name}`);
+        await uploadBytes(fileRef, file);
         try {
-            const snapshot = await uploadBytes(fileRef, file);
-            console.log('File uploaded successfully:', snapshot);
-            return snapshot
+            const downloadURL = await getDownloadURL(fileRef);  // Get the download URL
+            return downloadURL;  // Return the download URL
         } catch (error) {
             console.error('Error uploading file:', error);
         }
     };
 
     const handleFormSubmit = async () => {
-        // to do just map threw the qustions and upload the files to firestore then save them to the data base dont forget to back the back end aswell
         const mappedQuestions = await Promise.all(
             formElements.map(async (element) => {
-                let uploadedFileUrl = null;
-
-
-                if (element.uploadedFile) {
-                    uploadedFileUrl = await handleFileUpload(element.uploadedFile);
-                }
-
+                console.log(element)
+                const uploadedFileUrl = await handleFileUpload(element.uploadedFile);
                 return {
-                    type: element.type,
+                    type: element.id,
                     inputValue: element.inputValue,
-                    ...(uploadedFileUrl && {
-                        uploadedFile: { url: uploadedFileUrl }
-                    })
+                    ...(uploadedFileUrl && { uploadedFileUrl })
                 };
             })
         );
 
+        const newData = { questions: mappedQuestions };
+        console.log(newData); // dont forget about the concatinat where it adds the element that is in the form and it will add it again if you submit it again
 
-        setFinalFormData({
-            questions: mappedQuestions
-        });
+        try {
+            const response = await axios.patch(`/AddQuestions/${id}`, newData); // Use 'id' here
+            console.log("Form updated successfully:", response.data);
+        } catch (error) {
+            console.error("Error updating form:", error);
+        }
     };
+
 
 
 
