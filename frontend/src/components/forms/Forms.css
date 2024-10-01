@@ -94,3 +94,24 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+.custom-select-wrapper {
+    position: relative;
+}
+
+.active-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: green;
+    /* Change this to your desired green color */
+    margin-right: 5px;
+    vertical-align: middle;
+    /* Align dot with text */
+}
+
+.form-select {
+    padding-left: 30px;
+    /* Ensure padding on the left for the dot */
+}

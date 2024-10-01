@@ -14,7 +14,8 @@ import Layout from './components/layout/Layout.js';
 import RequireAuth from './components/RequireAuth/RequireAuth.js';
 import PersistLogin from './components/persistlogin/PersistLogin.js';
 import LoadingPage from "./components/loadingpage/LoadingPage";
-import CreateForms from "./components/forms/CreateForms.js"
+import AddElements from "./components/forms/AddElements.js"
+import CreateForm from "./components/forms/CreateForm.js"
 
 
 
@@ -31,7 +32,8 @@ function App() {
           <Route element={<PersistLogin />}>
             <Route path='/' element={<HomePage />} />
             <Route element={<RequireAuth />}>
-              <Route path='/CreateForms' element={<CreateForms />} />
+              <Route path='/CreateForm' element={<CreateForm />} />
+              <Route path='/AddElements/:id' element={<AddElements />} />
               <Route path='/FormsPage' element={<FormsPage />} />
               <Route path="/Responses" element={<ResponseCard />} />
 

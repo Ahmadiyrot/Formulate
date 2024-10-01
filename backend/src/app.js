@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 import "./DB/mongoose.js";
 import accountRouter from "./routers/accountRouter.js"
+import formsRouter from "./routers/formsRouter.js"
 const app = express()
 
 app.use(cors({
@@ -16,6 +17,8 @@ app.use(cookieParser())
 
 
 app.use(accountRouter)
+app.use(formsRouter)
+
 
 
 app.listen(5000, () => {

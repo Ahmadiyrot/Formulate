@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import DraggableLibrary from './questions/DraggableLibrary';
-import DroppableFormArea from './questions/DroppableFormArea';
-import TextAreaQ from './questions/TextAreaQ';
-import RatingQ from './questions/RatingQ';
-import QWithImg from './questions/QWithImg';
-import QTrueOrFalse from './questions/QTrueOrFalse';
+import { useParams } from 'react-router-dom';
+import DraggableLibrary from './questions/DraggableLibrary.js';
+import DroppableFormArea from './questions/DroppableFormArea.js';
+import TextAreaQ from './questions/TextAreaQ.js';
+import RatingQ from './questions/RatingQ.js';
+import QWithImg from './questions/QWithImg.js';
+import QTrueOrFalse from './questions/QTrueOrFalse.js';
 import QWithColorPicker from './questions/QWithColorPicker.js'
 import QWithTextAndImgAnswer from './questions/QWithTextAndImgAnswer.js';
 import QWithImgAnswer from './questions/QWithImgAnswer.js';
 import QWithMultiAnswer from './questions/QWithMultiAnswer.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { storage } from '../../firebaseConfig.js';
+import { ref, uploadBytes } from 'firebase/storage';
 
 
-const CreateForms = () => {
+
+const AddElements = () => {
     const [formElements, setFormElements] = useState([]);
+    const [finalFormData, setFinalFormData] = useState({})
+    const { id } = useParams();
+    console.log(id)
+
 
     const handleOnDragEnd = (result) => {
         const { destination, source } = result;
@@ -160,10 +170,49 @@ const CreateForms = () => {
         );
     };
 
-    const handleFormSubmit = () => {
+    const handleFileUpload = async (file) => {
+        if (!file) return;
 
-        console.log('Collected form data:', formElements);
+        const fileRef = ref(storage, `uploads/${file.name}`);
+        console.log(fileRef)
+
+        try {
+            const snapshot = await uploadBytes(fileRef, file);
+            console.log('File uploaded successfully:', snapshot);
+            return snapshot
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
     };
+
+    const handleFormSubmit = async () => {
+        // to do just map threw the qustions and upload the files to firestore then save them to the data base dont forget to back the back end aswell
+        const mappedQuestions = await Promise.all(
+            formElements.map(async (element) => {
+                let uploadedFileUrl = null;
+
+
+                if (element.uploadedFile) {
+                    uploadedFileUrl = await handleFileUpload(element.uploadedFile);
+                }
+
+                return {
+                    type: element.type,
+                    inputValue: element.inputValue,
+                    ...(uploadedFileUrl && {
+                        uploadedFile: { url: uploadedFileUrl }
+                    })
+                };
+            })
+        );
+
+
+        setFinalFormData({
+            questions: mappedQuestions
+        });
+    };
+
+
 
     return (
         <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -187,21 +236,24 @@ const CreateForms = () => {
                                 overflowY: "scroll",
                                 position: "relative"
                             }}
-
                         >
                             <DraggableLibrary />
                         </div>
                     </div>
-
                 </div>
-
-                <button onClick={handleFormSubmit} className="btn btn-primary mt-3">
-                    Submit Form
-                </button>
+                <div className="d-flex mt-4 justify-content-center">
+                    <button
+                        onClick={handleFormSubmit}
+                        className="btn btn-primary m-3"
+                        style={{ padding: '10px 20px' }}
+                    >
+                        Submit Form
+                    </button>
+                </div>
             </div>
         </DragDropContext>
 
     );
 };
 
-export default CreateForms;
+export default AddElements;

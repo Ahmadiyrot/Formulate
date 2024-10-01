@@ -4,7 +4,6 @@ const router = new express.Router()
 
 router.post("/SignUp", accountController.createAccount)
 
-
 router.post('/signIn', accountController.signInAccount);
 
 router.get("/refresh", accountController.refreshAccount);

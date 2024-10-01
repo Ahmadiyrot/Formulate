@@ -79,8 +79,8 @@ accountSchema.statics.findByCredentials = async (email, password) => {
 
 accountSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const accessToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '20m' }); 
-    const refreshToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_REFRESH_SECRET, { expiresIn: '60m' });
+    const accessToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const refreshToken = jwt.sign({ _id: user._id.toString() }, process.env.JWT_REFRESH_SECRET, { expiresIn: '24h' });
     user.tokens = user.tokens.concat({ token: refreshToken });
     await user.save();
     return { accessToken, refreshToken };
