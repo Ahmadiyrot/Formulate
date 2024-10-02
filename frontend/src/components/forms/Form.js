@@ -1,32 +1,28 @@
 import './Forms.css';
-import FavButton from './FavButton';
-import StatusButton from './StatusButton';
-
-const Form = () => {
+import { useNavigate } from 'react-router-dom';
+const Form = (props) => {
+    const navigate = useNavigate();
     return (
-        <div className="bg-white container p-3 mt-2 mb-2" style={{ maxWidth: "400px", borderRadius: "15px" }}>
-            <div className="row">
-                <div className="col-8 d-flex flex-column justify-content-center">
-                    <p style={{ fontWeight: "bold" }}>E-commerce website Form</p>
-                    <small style={{ fontSize: "0.7em", color: "grey" }}>
-                        <span style={{ fontWeight: "bold" }}>Date created:</span> 21-03-2022
-                    </small>
-                </div>
-                <div className="col-4 d-flex align-items-center justify-content-end">
-                    <FavButton />
-                </div>
+        <div className="bg-white container p-3" style={{ maxWidth: "400px", borderRadius: "15px" }}>
+            <div className="row d-flex justify-content-center p-1 mb-2">
+                <p style={{ fontWeight: "bold" }}>{props.formName}</p>
+                <small style={{ fontSize: "0.7em", color: "grey" }}>
+                    <span style={{ fontWeight: "bold" }}>Date created:</span> {props.date}
+                </small>
             </div>
             <div className="row">
                 <div className="col-8 d-flex align-items-center">
-                    <button type="submit" className="btn w-100 rounded-5 responsesButton">
+                    <button onClick={() => navigate(`/Responses/${props.id}`)} className="btn w-100 rounded-5 responsesButton">
                         View responses
                     </button>
                 </div>
                 <div className="col-4 d-flex align-items-center justify-content-end">
-                    <StatusButton color="#FDE9E9" />
+                    <div className="w-100 h-100 d-flex justify-content-center align-items-center rounded-2" style={{ backgroundColor: props.color, color: props.color2, width: props.cardwidth }}>
+                        <span>{props.status}</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

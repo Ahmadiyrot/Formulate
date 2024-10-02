@@ -1,7 +1,7 @@
 import Form from '../models/form.js'
 
 const createForm = async (req, res) => {
-    console.log(req);
+
     const form = new Form(req.body);
     try {
         await form.save();
@@ -10,6 +10,7 @@ const createForm = async (req, res) => {
         res.status(400).send(error);
     }
 };
+
 const addQuestionsToForm = async (req, res) => {
     const { id } = req.params;
     const { questions } = req.body;
@@ -20,13 +21,8 @@ const addQuestionsToForm = async (req, res) => {
             return res.status(404).send({ message: 'Form not found' });
         }
 
-        // Create a set to track existing question types in the form
         const existingQuestionTypes = new Set(form.questions.map(q => q.type));
-
-        // Filter new questions to only include those with unique types
         const uniqueQuestions = questions.filter(q => !existingQuestionTypes.has(q.type));
-
-        // Add the unique questions to the form                    
         form.questions = form.questions.concat(uniqueQuestions);
 
         await form.save();
@@ -37,7 +33,41 @@ const addQuestionsToForm = async (req, res) => {
     }
 };
 
+const getFormsByOwnerId = async (req, res) => {
+    const { ownerId } = req.params;
+    const { skip, limit } = req.query;
+
+    try {
+        const total = await Form.countDocuments({ formOwnerId: ownerId });
+        const forms = await Form.find({ formOwnerId: ownerId })
+            .skip(parseInt(skip))
+            .limit(parseInt(limit));
+
+        res.status(200).send({ forms, total });
+    } catch (error) {
+        res.status(400).send({ error: 'Error fetching forms', details: error });
+    }
+};
+
+const getFormById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const form = await Form.findById(id);
+        if (!form) {
+            return res.status(404).send({ message: 'Form not found' });
+        }
+
+        res.status(200).send({ form });
+    } catch (error) {
+        res.status(400).send({ error: 'Error fetching form', details: error });
+    }
+};
+
+
 export default {
     createForm,
-    addQuestionsToForm
+    addQuestionsToForm,
+    getFormsByOwnerId,
+    getFormById
 }

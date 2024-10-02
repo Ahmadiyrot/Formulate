@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 
 const formSchema = new mongoose.Schema({
     formName: {
@@ -22,7 +23,16 @@ const formSchema = new mongoose.Schema({
     questions: [{
         type: Object,
         default: {}
-    }]
+    }],
+}, {
+    timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true }
+});
+
+
+formSchema.path('createdAt').get(function (value) {
+    return moment(value).format('YYYY-MM-DD');
 });
 
 const Form = mongoose.model('Form', formSchema);

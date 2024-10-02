@@ -52,7 +52,7 @@
 }
 
 .responsesButton:hover {
-    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .MenuSize {
@@ -114,4 +114,90 @@
 .form-select {
     padding-left: 30px;
     /* Ensure padding on the left for the dot */
+}
+
+.custom-nav .nav-link {
+    background-color: #f8f9fa;
+    /* Light background for tabs */
+    color: #343a40;
+    /* Dark text color */
+    border: 1px solid transparent;
+    /* Transparent border */
+    transition: background-color 0.3s, color 0.3s;
+    /* Smooth transition for hover effects */
+    padding: 15px;
+    /* Add padding to tabs */
+    font-weight: bold;
+    /* Make text bold */
+    font-size: 1.1rem;
+    /* Increase font size */
+}
+
+.custom-nav .nav-link:hover {
+    background-color: #e2e6ea;
+    /* Change background on hover */
+    color: #495057;
+    /* Darker text on hover */
+}
+
+.custom-nav .nav-link.active {
+    background-color: #007bff;
+    /* Active tab background */
+    color: white;
+    /* Active tab text color */
+    border: 1px solid #007bff;
+    /* Border color for active tab */
+}
+
+.custom-nav .nav-link i {
+    margin-right: 8px;
+    /* Space between icon and text */
+    font-size: 1.5rem;
+    /* Increase icon size */
+}
+
+.container {
+    margin-top: 20px;
+    /* Add some spacing to the top */
+}
+
+.tab-content {
+    padding: 20px;
+    /* Add padding to the content area */
+    border: 1px solid #dee2e6;
+    /* Border for content area */
+    border-radius: 0.25rem;
+    /* Rounded corners for content area */
+}
+
+.create-form-button {
+    background-color: #FFBF00;
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all .3s ease;
+    width: auto;
+}
+
+.create-form-button:hover {
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+}
+
+.tabsstyling {
+    background-color: transparent !important;
+    border: transparent !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-align: center;
+}
+
+.tabsstyling.active {
+    color: #ffffff !important;
 }
