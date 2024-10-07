@@ -5,7 +5,7 @@ import RatingQ from './RatingQ';
 import QWithImg from './QWithImg';
 import QTrueOrFalse from './QTrueOrFalse';
 import QWithColorPicker from './QWithColorPicker.js'
-import QWithTextAndImgAnswer from './QWithTextAndImgAnswer.js';
+import QWithTextAndImgAns from './QWithTextAndImgAns.js';
 import QWithImgAnswer from './QWithImgAnswer.js';
 import QWithMultiAnswer from './QWithMultiAnswer.js';
 
@@ -133,7 +133,7 @@ const DraggableLibrary = () => {
                         )}
                     </Draggable>
 
-                    <Draggable draggableId="QWithTextAndImgAnswer" index={5}>
+                    <Draggable draggableId="QWithTextAndImgAns" index={5}>
                         {(provided) => (
                             <div
                                 ref={(el) => {
@@ -145,7 +145,7 @@ const DraggableLibrary = () => {
                                 className="mb-2 fade-in"
                                 style={{ ...provided.draggableProps.style }}
                             >
-                                <QWithTextAndImgAnswer inputValue="" setInputValue={() => { }} />
+                                <QWithTextAndImgAns inputValue="" setInputValue={() => { }} />
                             </div>
                         )}
                     </Draggable>

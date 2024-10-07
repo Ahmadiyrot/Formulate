@@ -10,6 +10,7 @@ const LOGIN_URL = '/signIn';
 
 const Login = () => {
     const { setAuth } = useAuth()
+    const { auth } = useAuth();
     const [cookies, setCookie] = useCookies(['jwt'])
     const navigate = useNavigate();
     const location = useLocation();
@@ -28,10 +29,11 @@ const Login = () => {
     }, [])
 
     useEffect(() => {
-        if (cookies.flag) {
-            navigate('/')
+        if (auth?.userName) {
+            navigate('/tabspage');
         }
     }, [cookies.flag, navigate]);
+
 
     useEffect(() => {
         setErrMsg('')

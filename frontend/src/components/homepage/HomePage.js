@@ -12,12 +12,24 @@ import Steps from '../steps/Steps';
 import useIsElementInViewport from './useIsElementInViewport';
 import Footer from '../footer/Footer';
 
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { useEffect } from 'react';
+
 const HomePage = () => {
     const [navRef, isNavInView] = useIsElementInViewport();
-
+    const navigate = useNavigate()
+    const [cookies, setCookie] = useCookies(['jwt'])
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+    useEffect(() => {
+        if (cookies.flag) {
+            navigate('/tabspage');
+        }else{
+            navigate('/');
+        }
+    }, [cookies.flag, navigate]);
 
     return (
         <>

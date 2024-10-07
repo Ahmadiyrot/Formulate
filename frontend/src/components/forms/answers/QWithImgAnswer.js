@@ -65,8 +65,8 @@ const QWithImgAnswer = ({ question, uploadedFileUrl, inputValue, setInputValue }
                     placeholder='Answer'
                     style={{
                         resize: "none",
-                        backgroundColor: "#ff000029",
-                        height: "120px",
+                        backgroundColor: "#f0f0f0",
+                        height: "120px", 
                     }}
                 />
                 <i
@@ -74,8 +74,7 @@ const QWithImgAnswer = ({ question, uploadedFileUrl, inputValue, setInputValue }
                     style={{
                         right: '10px',
                         top: '20%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'not-allowed',
+                        transform: 'translateY(-50%)',                 
                         backgroundColor: 'transparent',
                     }}
                 />

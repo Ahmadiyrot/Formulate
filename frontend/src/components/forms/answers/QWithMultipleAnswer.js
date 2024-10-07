@@ -1,12 +1,7 @@
-import { useState } from 'react';
+// QWithMultipleAnswer.js
+import React from 'react';
 
-const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
-    const [answers, setAnswers] = useState(['']); 
-
-    const clearInput = () => {
-        setInputValue('');
-    };
-
+const QWithMultipleAnswer = ({ question, answers, setAnswers }) => {
     const addAnswer = () => {
         if (answers.length < 4) {
             setAnswers([...answers, '']);
@@ -24,25 +19,23 @@ const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
     };
 
     return (
-        <div className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3" style={{ backgroundColor: "#fff", padding: "5px" }}>
+        <div
+            className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3"
+            style={{ backgroundColor: "#fff", padding: "5px" }}
+        >
             <div className="position-relative w-100">
                 <input
                     type="text"
                     className="w-100 ps-2 rounded-2 textArea-Textinput"
                     placeholder="Question"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                />
-                <i
-                    className="bi bi-x-lg position-absolute"
+                    value={question}
+                    readOnly
                     style={{
-                        right: '10px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'pointer',
-                        backgroundColor: 'transparent',
+                        backgroundColor: "#f0f0f0",
+                        border: "1px solid #ccc",
+                        height: "40px",
+                        fontSize: "16px",
                     }}
-                    onClick={clearInput}
                 />
             </div>
 
@@ -53,7 +46,7 @@ const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
                         placeholder={`Answer ${index + 1}`}
                         value={answer}
                         onChange={(e) => handleAnswerChange(e.target.value, index)}
-                        style={{ height: '100px', resize: 'none' }} 
+                        style={{ height: '100px', resize: 'none' }}
                     />
                     {index > 0 && (
                         <i
@@ -76,8 +69,6 @@ const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
                     className="btn mt-2"
                     onClick={addAnswer}
                     style={{ alignSelf: 'center', color: "black", borderColor: "black" }}
-                    disabled
-
                 >
                     <i className="bi bi-plus-lg" style={{ color: "black !important" }}></i>
                 </button>
@@ -86,4 +77,4 @@ const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
     );
 };
 
-export default QWithMultiAnswer;
+export default QWithMultipleAnswer;

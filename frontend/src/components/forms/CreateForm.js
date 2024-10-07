@@ -51,57 +51,62 @@ const CreateForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 border border-secondary rounded bg-light" style={{ maxWidth: '400px', margin: '0 auto' }}>
-            <div className="mb-3">
-                <label className="form-label fw-bold">Title:</label>
-                <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    maxLength={MAX_TITLE_LENGTH}
-                    required
-                    className="form-control"
-                />
-                <small className="form-text text-muted text-end">
-                    {MAX_TITLE_LENGTH - title.length} characters remaining
-                </small>
-            </div>
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="row">
+                <div className="col-md-6 col-lg-4">
+                    <form onSubmit={handleSubmit} className="p-4 border border-secondary rounded bg-light" style={{ width: "400px" }}>
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Title:</label>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                maxLength={MAX_TITLE_LENGTH}
+                                required
+                                className="form-control"
+                            />
+                            <small className="form-text text-muted text-end">
+                                {MAX_TITLE_LENGTH - title.length} characters remaining
+                            </small>
+                        </div>
 
-            <div className="mb-3">
-                <label className="form-label fw-bold">Description:</label>
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    maxLength={MAX_DESCRIPTION_LENGTH}
-                    required
-                    className="form-control"
-                    style={{ minHeight: '100px' }}
-                />
-                <small className="form-text text-muted text-end">
-                    {MAX_DESCRIPTION_LENGTH - description.length} characters remaining
-                </small>
-            </div>
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Description:</label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                maxLength={MAX_DESCRIPTION_LENGTH}
+                                required
+                                className="form-control"
+                                style={{ minHeight: '100px' }}
+                            />
+                            <small className="form-text text-muted text-end">
+                                {MAX_DESCRIPTION_LENGTH - description.length} characters remaining
+                            </small>
+                        </div>
 
-            <div className="mb-3">
-                <label className="form-label fw-bold">Status:</label>
-                <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    required
-                    className="form-select"
-                >
-                    <option value="active">Active</option>
-                    <option value="paused">Paused</option>
-                </select>
-            </div>
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Status:</label>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                                required
+                                className="form-select"
+                            >
+                                <option value="active">Active</option>
+                                <option value="paused">Paused</option>
+                            </select>
+                        </div>
 
-            <button
-                type="submit"
-                className="btn btn-primary"
-            >
-                Create Form
-            </button>
-        </form>
+                        <button type="submit" className="btn btn-primary">
+                            Create Form
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     );
 };
 

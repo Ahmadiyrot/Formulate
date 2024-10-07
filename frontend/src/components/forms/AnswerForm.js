@@ -1,13 +1,23 @@
+// AnswerForm.js
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../api/axios";
 import TextAreaAnswer from './answers/TextAreaAnswer.js';
 import QWithImgAnswer from "./answers/QWithImgAnswer.js";
+import RatingQAnswer from "./answers/RatingQAnswer.js";
+import QTrueOrFalseAnswer from "./answers/QTrueOrFalseAnswer.js";
+import QWithColorPickerAnswer from "./answers/QWithColorPickerAnswer.js";
+import QWithTextAndImgAnswer from './answers/QWithTextAndImgAnswer.js';
+import QWithAnswerImg from "./answers/QWithAnswerImg.js";
+import QWithMultipleAnswer from './answers/QWithMultipleAnswer.js';
+import useAuth from '../../hooks/useAuth.js';
+import { toast } from 'react-hot-toast';
 
 const AnswerForm = () => {
     const { id } = useParams();
     const [form, setForm] = useState(null);
     const [answers, setAnswers] = useState([]);
+    const { auth } = useAuth();
 
     const fetchFormById = async (id) => {
         const response = await axios.get(`/AnswerForm/${id}`);
@@ -18,30 +28,145 @@ const AnswerForm = () => {
         const loadForm = async () => {
             const data = await fetchFormById(id);
             setForm(data.form);
-            setAnswers(data.form.questions.map(question => ({
-                question: question.inputValue,
-                answer: '',
-                type: question.type // Assuming question.type exists
-            })));
+            console.log(data)
+
+            const initialAnswers = data.form.questions.map(question => {
+                const baseAnswer = {
+                    question: question.inputValue,
+                    type: question.type,
+                };
+
+                switch (question.type.split('-')[0]) {
+                    case 'TextAreaQ':
+                        return {
+                            ...baseAnswer,
+                            answer: '',
+                        };
+                    case 'QWithImg':
+                        return {
+                            ...baseAnswer,
+                            answer: '',
+                            uploadedFileUrl: question.uploadedFileUrl,
+                        };
+                    case 'RatingQ':
+                        return {
+                            ...baseAnswer,
+                            rating: 0,
+                        };
+                    case 'QTrueOrFalse':
+                        return {
+                            ...baseAnswer,
+                            selectedOption: '',
+                        };
+                    case 'QWithColorPicker':
+                        return {
+                            ...baseAnswer,
+                            selectedColors: [],
+                        };
+                    case 'QWithTextAndImgAns':
+                        return {
+                            ...baseAnswer,
+                            answer: '',
+                            uploadedFileUrl: '',
+                        };
+                    case 'QWithImgAnswer':
+                        return {
+                            ...baseAnswer,
+                            uploadedFileUrl: '',
+                        };
+                    case 'QWithMultiAnswer':
+                        return {
+                            ...baseAnswer,
+                            answers: [''],
+                        };
+
+                    default:
+                        return {
+                            ...baseAnswer,
+                            answer: '',
+                        };
+                }
+            });
+
+            setAnswers(initialAnswers);
         };
 
         loadForm();
     }, [id]);
 
     const handleInputChange = (index, newValue) => {
-        const updatedAnswers = [...answers];
-        updatedAnswers[index].answer = newValue; // Update only the answer
-        setAnswers(updatedAnswers);
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                answer: newValue,
+            };
+            return updatedAnswers;
+        });
+    };
+
+    const handleRatingChange = (index, newRating) => {
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                rating: newRating,
+            };
+            return updatedAnswers;
+        });
+    };
+
+    const handleOptionChange = (index, newOption) => {
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                selectedOption: newOption,
+            };
+            return updatedAnswers;
+        });
+    };
+
+    const handleColorsChange = (index, newColors) => {
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                selectedColors: newColors,
+            };
+            return updatedAnswers;
+        });
+    };
+
+    const handleFileUrlChange = (index, newFileUrl) => {
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                uploadedFileUrl: newFileUrl,
+            };
+            return updatedAnswers;
+        });
+    };
+
+    const handleMultipleAnswersChange = (index, newAnswers) => {
+        setAnswers(prevAnswers => {
+            const updatedAnswers = [...prevAnswers];
+            updatedAnswers[index] = {
+                ...updatedAnswers[index],
+                answers: newAnswers,
+            };
+            return updatedAnswers;
+        });
     };
 
     const renderAnswerComponent = (question, index) => {
-        console.log(question)
         switch (question.type.split('-')[0]) {
             case 'TextAreaQ':
                 return (
                     <TextAreaAnswer
                         key={index}
-                        question={question.question}
+                        question={question.inputValue}
                         onAnswerChange={(newValue) => handleInputChange(index, newValue)}
                     />
                 );
@@ -49,34 +174,124 @@ const AnswerForm = () => {
                 return (
                     <QWithImgAnswer
                         key={index}
-                        question={question.question}
-                        uploadedFileUrl={question.uploadedFileUrl} // Adjust this according to your data structure
-                        inputValue={question.answer} // Assuming you're tracking the answer in the question object
-                        setInputValue={(newValue) => handleInputChange(index, newValue)} // Change handler
+                        question={question.inputValue}
+                        uploadedFileUrl={question.uploadedFileUrl}
+                        inputValue={answers[index]?.answer || ''}
+                        setInputValue={(newValue) => handleInputChange(index, newValue)}
                     />
-
                 );
-            // Add more cases for different question types
+            case 'RatingQ':
+                return (
+                    <RatingQAnswer
+                        key={index}
+                        question={question.inputValue}
+                        rating={answers[index]?.rating || 0}
+                        setRating={(newRating) => handleRatingChange(index, newRating)}
+                    />
+                );
+            case 'QTrueOrFalse':
+                return (
+                    <QTrueOrFalseAnswer
+                        key={index}
+                        question={question.inputValue}
+                        selectedOption={answers[index]?.selectedOption || ''}
+                        onOptionChange={(newOption) => handleOptionChange(index, newOption)}
+                    />
+                );
+            case 'QWithColorPicker':
+                return (
+                    <QWithColorPickerAnswer
+                        key={index}
+                        question={question.inputValue}
+                        selectedColors={answers[index]?.selectedColors || []}
+                        onColorsChange={(newColors) => handleColorsChange(index, newColors)}
+                    />
+                );
+            case 'QWithTextAndImgAns':
+                return (
+                    <QWithTextAndImgAnswer
+                        key={index}
+                        question={question.inputValue}
+                        answer={answers[index]?.answer || ''}
+                        setAnswer={(newValue) => handleInputChange(index, newValue)}
+                        uploadedFileUrl={answers[index]?.uploadedFileUrl || ''}
+                        setUploadedFileUrl={(newUrl) => handleFileUrlChange(index, newUrl)}
+                    />
+                );
+            case 'QWithImgAnswer':
+                return (
+                    <QWithAnswerImg
+                        key={index}
+                        question={question.inputValue}
+                        uploadedFileUrl={answers[index]?.uploadedFileUrl || ''}
+                        setUploadedFileUrl={(newUrl) => handleFileUrlChange(index, newUrl)}
+                    />
+                );
+            case 'QWithMultiAnswer':
+                return (
+                    <QWithMultipleAnswer
+                        key={index}
+                        question={question.inputValue}
+                        answers={answers[index]?.answers || ['']}
+                        setAnswers={(newAnswers) => handleMultipleAnswersChange(index, newAnswers)}
+                    />
+                );
             default:
-                return null; // Handle unknown types gracefully
+                return null;
         }
     };
 
     const handleFormSubmit = async () => {
-        const formData = {
+        const submissionData = {
+            formOwnerId: form.formOwnerId,
             formId: id,
-            answers: answers.map(({ question, answer, type }) => ({
-                question,
-                answer,
-                type
-            })),
+            AnsweredBy: auth?.userInfo?._id,
+            answers: answers.map((answer) => {
+                const { question, type } = answer;
+                const response = { question, type };
+
+                if (type.startsWith('TextAreaQ')) {
+                    response.answer = answer.answer || '';
+                }
+
+                if (type.startsWith('QWithImg')) {
+                    response.answer = answer.answer || '';
+                    response.uploadedFileUrl = answer.uploadedFileUrl || '';
+                }
+
+                if (type.startsWith('RatingQ')) {
+                    response.answer = answer.rating;
+                }
+
+                if (type.startsWith('QTrueOrFalse')) {
+                    response.answer = answer.selectedOption || '';
+                }
+
+                if (type.startsWith('QWithColorPicker')) {
+                    response.answer = answer.selectedColors || [];
+                }
+
+                if (type.startsWith('QWithTextAndImgAns')) {
+                    response.answer = answer.answer || '';
+                    response.uploadedFileUrl = answer.uploadedFileUrl || '';
+                }
+                if (type.startsWith('QWithImg')) {
+                    response.uploadedFileUrl = answer.uploadedFileUrl || '';
+                }
+                if (type.startsWith('QWithMultiAnswer')) {
+                    response.answers = answer.answers || [];
+                }
+                return response;
+            }),
         };
-        console.log(formData);
+
+        console.log(submissionData);
 
         try {
-            const response = await axios.post('/submitAnswers', formData);
-            console.log("Form submitted successfully:", response.data);
+            const response = await axios.post('/Answer', submissionData);
+            toast.success('Answer saved')
         } catch (error) {
+            toast.error("Error subitting form:", error.status)
             console.error("Error submitting form:", error);
         }
     };
@@ -91,8 +306,11 @@ const AnswerForm = () => {
                     <hr />
                 </div>
 
-                {/* Render the appropriate answer component based on question type */}
-                {form?.questions.map((question, index) => renderAnswerComponent(question, index))}
+                {form?.questions.map((question, index) => (
+                    <div key={index}>
+                        {renderAnswerComponent(question, index)}
+                    </div>
+                ))}
 
                 <button onClick={handleFormSubmit} className="btn btn-primary m-3">Submit Answers</button>
             </div>

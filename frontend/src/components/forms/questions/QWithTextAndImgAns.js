@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const QWithTextAndImgAnswer = ({ inputValue, setInputValue, dropzoneEnabled }) => {
-    const [uploadedFile, setUploadedFile] = useState(null); // Manage uploaded file state locally
-    const [preview, setPreview] = useState(null); // Preview for image files
+const QWithTextAndImgAns = ({ inputValue, setInputValue, dropzoneEnabled }) => {
+    const [uploadedFile, setUploadedFile] = useState(null);
+    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
-        // Generate a preview for image files
         if (uploadedFile) {
             if (uploadedFile.type.startsWith('image/')) {
                 const imageUrl = URL.createObjectURL(uploadedFile);
                 setPreview(imageUrl);
             } else {
-                setPreview(null); // No preview for non-image files
+                setPreview(null);
             }
         } else {
             setPreview(null);
@@ -21,11 +20,11 @@ const QWithTextAndImgAnswer = ({ inputValue, setInputValue, dropzoneEnabled }) =
 
     const clearInput = () => {
         setInputValue('');
-        setUploadedFile(null); // Clear the uploaded file when input is cleared
+        setUploadedFile(null);
     };
 
     const onDrop = (acceptedFiles) => {
-        const file = acceptedFiles[0]; // Single file only
+        const file = acceptedFiles[0];
         setUploadedFile(file);
     };
 
@@ -37,7 +36,7 @@ const QWithTextAndImgAnswer = ({ inputValue, setInputValue, dropzoneEnabled }) =
         },
         onDrop,
         multiple: false,
-        disabled: !dropzoneEnabled, // Use dynamic disabling based on prop
+        disabled: !dropzoneEnabled,
     });
 
     return (
@@ -131,4 +130,4 @@ const QWithTextAndImgAnswer = ({ inputValue, setInputValue, dropzoneEnabled }) =
     );
 };
 
-export default QWithTextAndImgAnswer;
+export default QWithTextAndImgAns;

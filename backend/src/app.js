@@ -4,6 +4,7 @@ import cors from "cors"
 import "./DB/mongoose.js";
 import accountRouter from "./routers/accountRouter.js"
 import formsRouter from "./routers/formsRouter.js"
+import fromsAnswerRouter from "./routers/fromsAnswerRouter.js"
 const app = express()
 
 app.use(cors({
@@ -18,6 +19,7 @@ app.use(cookieParser())
 
 app.use(accountRouter)
 app.use(formsRouter)
+app.use(fromsAnswerRouter)
 
 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DraggableLibrary from './questions/DraggableLibrary.js';
 import DroppableFormArea from './questions/DroppableFormArea.js';
 import TextAreaQ from './questions/TextAreaQ.js';
@@ -8,7 +8,7 @@ import RatingQ from './questions/RatingQ.js';
 import QWithImg from './questions/QWithImg.js';
 import QTrueOrFalse from './questions/QTrueOrFalse.js';
 import QWithColorPicker from './questions/QWithColorPicker.js'
-import QWithTextAndImgAnswer from './questions/QWithTextAndImgAnswer.js';
+import QWithTextAndImgAns from './questions/QWithTextAndImgAns.js';
 import QWithImgAnswer from './questions/QWithImgAnswer.js';
 import QWithMultiAnswer from './questions/QWithMultiAnswer.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -17,6 +17,7 @@ import { storage } from '../../firebaseConfig.js';
 import { ref, uploadBytes } from 'firebase/storage';
 import { getDownloadURL } from "firebase/storage";
 import axios from '../../api/axios.js';
+import { toast } from 'react-hot-toast';
 
 
 
@@ -24,8 +25,9 @@ const AddElements = () => {
     const [formElements, setFormElements] = useState([]);
     const [finalFormData, setFinalFormData] = useState({})
     const { id } = useParams();
+    const navigate = useNavigate()
     console.log(id)
-
+    const [isDisabled, setIsDisabled] = useState(false)
 
     const handleOnDragEnd = (result) => {
         const { destination, source } = result;
@@ -67,10 +69,10 @@ const AddElements = () => {
                     ...prev,
                     { id: `QWithColorPicker-${Date.now()}`, type: 'QWithColorPicker', inputValue: '', uploadedFile: null }
                 ]);
-            } else if (draggableId === 'QWithTextAndImgAnswer') {
+            } else if (draggableId === 'QWithTextAndImgAns') {
                 setFormElements(prev => [
                     ...prev,
-                    { id: `QWithTextAndImgAnswer-${Date.now()}`, type: 'QWithTextAndImgAnswer', inputValue: '', uploadedFile: null }
+                    { id: `QWithTextAndImgAns-${Date.now()}`, type: 'QWithTextAndImgAns', inputValue: '', uploadedFile: null }
                 ]);
             } else if (draggableId === 'QWithImgAnswer') {
                 setFormElements(prev => [
@@ -130,9 +132,9 @@ const AddElements = () => {
                         setInputValue={(value) => handleInputChange(element.id, value)}
                     />
                 );
-            case 'QWithTextAndImgAnswer':
+            case 'QWithTextAndImgAns':
                 return (
-                    <QWithTextAndImgAnswer
+                    <QWithTextAndImgAns
                         inputValue={element.inputValue}
                         setInputValue={(value) => handleInputChange(element.id, value)}
                     />
@@ -178,8 +180,8 @@ const AddElements = () => {
         const fileRef = ref(storage, `${id}/${file.name}`);
         await uploadBytes(fileRef, file);
         try {
-            const downloadURL = await getDownloadURL(fileRef);  // Get the download URL
-            return downloadURL;  // Return the download URL
+            const downloadURL = await getDownloadURL(fileRef);
+            return downloadURL;
         } catch (error) {
             console.error('Error uploading file:', error);
         }
@@ -199,13 +201,19 @@ const AddElements = () => {
         );
 
         const newData = { questions: mappedQuestions };
-        console.log(newData); // dont forget about the concatinat where it adds the element that is in the form and it will add it again if you submit it again
+        console.log(newData);
 
         try {
-            const response = await axios.patch(`/AddQuestions/${id}`, newData); // Use 'id' here
-            console.log("Form updated successfully:", response.data);
+            const response = await axios.patch(`/AddQuestions/${id}`, newData);
+            toast.success('Form Was Updated successfully')
+            setIsDisabled(true)
+            // setTimeout(() => {
+            //     navigate('/TabsPage')
+            // }, "1500");
+
         } catch (error) {
             console.error("Error updating form:", error);
+            toast.error("Error updating form:", error)
         }
     };
 
@@ -244,6 +252,7 @@ const AddElements = () => {
                         onClick={handleFormSubmit}
                         className="btn btn-primary m-3"
                         style={{ padding: '10px 20px' }}
+                        disabled={isDisabled}
                     >
                         Submit Form
                     </button>

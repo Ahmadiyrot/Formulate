@@ -21,9 +21,20 @@ const addQuestionsToForm = async (req, res) => {
             return res.status(404).send({ message: 'Form not found' });
         }
 
-        const existingQuestionTypes = new Set(form.questions.map(q => q.type));
-        const uniqueQuestions = questions.filter(q => !existingQuestionTypes.has(q.type));
-        form.questions = form.questions.concat(uniqueQuestions);
+        questions.forEach(newQuestion => {
+            const existingQuestion = form.questions.find(q => q.type === newQuestion.type);
+
+            if (existingQuestion) {
+                if (existingQuestion.inputValue !== newQuestion.inputValue) {
+                    existingQuestion.inputValue = newQuestion.inputValue;
+                    form.markModified('questions');
+                }
+            } else {
+                form.questions.push(newQuestion);
+            }
+
+        });
+
 
         await form.save();
 
