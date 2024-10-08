@@ -17,7 +17,7 @@ const formSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["active", "paused"],
+        enum: ["Active", "Paused", "Disabled"],
         default: "active"
     },
     questions: [{

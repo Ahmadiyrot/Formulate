@@ -8,6 +8,10 @@ router.patch("/AddQuestions/:id", formsController.addQuestionsToForm);
 
 router.get("/forms/:ownerId", formsController.getFormsByOwnerId);
 
-router.get("/AnswerForm/:id",formsController.getFormById)
+router.get("/AnswerForm/:id", formsController.getFormById)
+
+router.delete("/DeleteForm/:id", formsController.deleteFormById);
+
+router.patch("/ChangeFormStatus/:id", formsController.changeFormStatus);
 
 export default router

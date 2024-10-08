@@ -6,7 +6,7 @@ const TextAreaAnswer = ({ question, onAnswerChange }) => {
     const handleAnswerChange = (e) => {
         const answer = e.target.value;
         setTextAreaValue(answer);
-        onAnswerChange(answer); // Send the answer back to the parent component
+        onAnswerChange(answer); 
     };
 
     return (

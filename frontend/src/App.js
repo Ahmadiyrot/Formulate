@@ -27,7 +27,7 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route path='loading' element={<LoadingPage />} />
 
-          <Route path='*' element={<ErrorPage />} />
+          <Route path='error' element={<ErrorPage />} />
           <Route path='/SignUp' element={<SignUp />} />
           <Route path='/Login' element={<Login />} />
           <Route element={<PersistLogin />}>

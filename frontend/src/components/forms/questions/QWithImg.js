@@ -5,7 +5,6 @@ const QWithImg = ({ inputValue, setInputValue, uploadedFile, setUploadedFile, dr
     const [preview, setPreview] = useState(null);
 
     useEffect(() => {
-        // Update the preview when the uploadedFile changes
         if (uploadedFile) {
             if (uploadedFile.type.startsWith('image/')) {
                 const imageUrl = URL.createObjectURL(uploadedFile);

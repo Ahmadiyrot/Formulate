@@ -1,6 +1,5 @@
-// AnswerForm.js
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import TextAreaAnswer from './answers/TextAreaAnswer.js';
 import QWithImgAnswer from "./answers/QWithImgAnswer.js";
@@ -18,18 +17,40 @@ const AnswerForm = () => {
     const [form, setForm] = useState(null);
     const [answers, setAnswers] = useState([]);
     const { auth } = useAuth();
+    const navigate = useNavigate()
 
-    const fetchFormById = async (id) => {
-        const response = await axios.get(`/AnswerForm/${id}`);
-        return response.data;
+
+    const checkIfAnswered = async (id) => {
+        try {
+            const response = await axios.post('/isanswered', {
+                formId: id,
+                answeredById: auth.userInfo._id,
+            });
+
+            if (response.data.answered) {
+                return 1;
+            } else {
+                toast.success('hello')
+                const response = await axios.get(`/AnswerForm/${id}`);
+                return response.data
+            }
+        } catch (error) {
+            console.error('Error checking if form is answered:', error);
+            toast.error('An error occurred. Please try again later.');
+            return;
+        }
     };
 
     useEffect(() => {
         const loadForm = async () => {
-            const data = await fetchFormById(id);
-            setForm(data.form);
-            console.log(data)
-
+            const data = await checkIfAnswered(id);
+            if (data === 1) {
+                toast.error('You have already answered this form.');
+                navigate('/error', { state: { id: 402 } });
+                return;
+            } else {
+                setForm(data.form);
+            }
             const initialAnswers = data.form.questions.map(question => {
                 const baseAnswer = {
                     question: question.inputValue,

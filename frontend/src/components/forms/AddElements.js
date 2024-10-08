@@ -29,13 +29,14 @@ const AddElements = () => {
     console.log(id)
     const [isDisabled, setIsDisabled] = useState(false)
 
+
     const handleOnDragEnd = (result) => {
+        setIsDisabled(false)
         const { destination, source } = result;
 
         if (!destination) {
             return;
         }
-
         if (source.droppableId === destination.droppableId && destination.droppableId === 'droppable-area') {
             const reorderedElements = Array.from(formElements);
             const [movedElement] = reorderedElements.splice(source.index, 1);
@@ -43,7 +44,6 @@ const AddElements = () => {
             setFormElements(reorderedElements);
         } else if (destination.droppableId === 'droppable-area') {
             const draggableId = result.draggableId;
-
             if (draggableId === 'TextAreaQ') {
                 setFormElements(prev => [
                     ...prev,
@@ -159,6 +159,7 @@ const AddElements = () => {
     };
 
     const handleInputChange = (id, newValue) => {
+        setIsDisabled(false)
         setFormElements(prev =>
             prev.map(element =>
                 element.id === id ? { ...element, inputValue: newValue } : element

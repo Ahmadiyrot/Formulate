@@ -1,4 +1,3 @@
-// QWithMultipleAnswer.js
 import React from 'react';
 
 const QWithMultipleAnswer = ({ question, answers, setAnswers }) => {

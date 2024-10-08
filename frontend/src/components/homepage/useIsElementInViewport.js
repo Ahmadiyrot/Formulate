@@ -17,7 +17,7 @@ const useIsElementInViewport = () => {
       }
     };
 
-    handleScroll(); // Initial check
+    handleScroll(); 
 
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleScroll);

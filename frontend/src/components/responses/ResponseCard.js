@@ -1,6 +1,6 @@
 import './ResponseCard.css';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../api/axios';  // Ensure axios is properly configured
+import axios from '../../api/axios';  
 import useAuth from '../../hooks/useAuth';
 
 const ResponseCard = (props) => {

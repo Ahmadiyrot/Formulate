@@ -1,10 +1,9 @@
 import React from 'react';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-    const maxVisiblePages = 3; // Maximum number of pages to display
+    const maxVisiblePages = 3; 
     let startPage, endPage;
 
-    // Determine the start and end page numbers to show
     if (totalPages <= maxVisiblePages) {
         startPage = 1;
         endPage = totalPages;

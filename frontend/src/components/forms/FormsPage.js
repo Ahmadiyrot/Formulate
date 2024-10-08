@@ -7,13 +7,13 @@ import Pagination from "./Pagination";
 
 const FormsPage = () => {
     const { auth } = useAuth();
-    const ownerId = auth.userInfo._id; // Get the ownerId from logged-in user's info
+    const ownerId = auth.userInfo._id;
     const [forms, setForms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [page, setPage] = useState(1); // Current page number
-    const [totalPages, setTotalPages] = useState(1); // Total number of pages
-    const formsPerPage = 9; // Show 9 forms per page
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const formsPerPage = 9;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const FormsPage = () => {
             try {
                 const skip = (page - 1) * formsPerPage;
                 const response = await axios.get(`/forms/${ownerId}?skip=${skip}&limit=${formsPerPage}`);
-
+                console.log(response)
                 if (response.data.forms) {
                     setForms(response.data.forms);
                     setTotalPages(Math.ceil(response.data.total / formsPerPage));
@@ -68,9 +68,9 @@ const FormsPage = () => {
                                     <Form
                                         formName={form.formName}
                                         date={form.createdAt}
-                                        color={form.status === 'paused' ? '#FDE9E9' : '#D9F9E6'}
+                                        color={form.status === 'Paused' ? '#FCEB9F' : '#D9F9E6'}
                                         status={form.status}
-                                        color2={form.status === 'paused' ? '#CD3636' : '#2F9461'}
+                                        color2={form.status === 'Paused' ? '#C8811A' : '#2F9461'}
                                         id={form._id}
                                     />
                                 </div>
@@ -87,7 +87,6 @@ const FormsPage = () => {
                         )}
                     </div>
 
-                    {/* Pagination Component */}
                     {totalPages > 1 && (
                         <div className="d-flex justify-content-center mt-4">
                             <Pagination

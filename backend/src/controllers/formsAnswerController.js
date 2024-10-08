@@ -37,8 +37,6 @@ const deleteFormAnswer = async (req, res) => {
     }
 };
 
-
-
 const getFormAnswers = async (req, res) => {
     const { formId } = req.params;
 
@@ -48,7 +46,7 @@ const getFormAnswers = async (req, res) => {
 
     try {
         const formAnswers = await FormAnswer.find({ formId: formId })
-            .populate('AnsweredBy', 'email'); 
+            .populate('AnsweredBy', 'email');
 
         if (formAnswers.length === 0) {
             return res.status(404).send({ error: "No form answers found or you are not authorized to view them" });
@@ -60,9 +58,30 @@ const getFormAnswers = async (req, res) => {
     }
 };
 
+const isAnswered = async (req, res) => {
+    const { formId, AnsweredById } = req.body;
+    console.log(req.body)
+
+    try {
+        const response = await FormAnswer.findOne({ formId: formId, answeredBy: AnsweredById });
+
+        if (response) {
+
+            return res.json({ answered: true });
+        } else {
+            return res.json({ answered: false });
+        }
+    } catch (error) {
+        console.error('Error checking if form is answered:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 
 export default {
     createFormAnswer,
     deleteFormAnswer,
-    getFormAnswers
+    getFormAnswers,
+    isAnswered
 }
