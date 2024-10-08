@@ -1,6 +1,6 @@
 import Form from '../models/form.js'
 
-const createForm = async (req, res) => {
+const createForm = async (req, res) => { // this will create a form from a title desc and status with no qustions
 
     const form = new Form(req.body);
     try {
@@ -11,7 +11,7 @@ const createForm = async (req, res) => {
     }
 };
 
-const addQuestionsToForm = async (req, res) => {
+const addQuestionsToForm = async (req, res) => { // this will add qustions to the form that was already created
     const { id } = req.params;
     const { questions } = req.body;
 
@@ -44,18 +44,20 @@ const addQuestionsToForm = async (req, res) => {
     }
 };
 
-const getFormsByOwnerId = async (req, res) => {
+const getFormsByOwnerId = async (req, res) => { // this will return forms that are not empty (empty means no qustons inside the form) or have "disabled" status
     const { ownerId } = req.params;
     const { skip, limit } = req.query;
 
     try {
-        const total = await Form.countDocuments({ 
-            formOwnerId: ownerId, 
-            status: { $in: ['Active', 'Paused'] } 
+        const total = await Form.countDocuments({
+            formOwnerId: ownerId,
+            status: { $in: ['Active', 'Paused'] },
+            questions: { $ne: [] }
         });
-        const forms = await Form.find({ 
-            formOwnerId: ownerId, 
-            status: { $in: ['Active', 'Paused'] } 
+        const forms = await Form.find({
+            formOwnerId: ownerId,
+            status: { $in: ['Active', 'Paused'] },
+            questions: { $ne: [] }
         })
             .skip(parseInt(skip))
             .limit(parseInt(limit));
@@ -67,7 +69,7 @@ const getFormsByOwnerId = async (req, res) => {
 };
 
 
-const getFormById = async (req, res) => {
+const getFormById = async (req, res) => { // this will get the form by the object id 
     const { id } = req.params;
 
     try {
@@ -82,7 +84,7 @@ const getFormById = async (req, res) => {
     }
 };
 
-const deleteFormById = async (req, res) => {
+const deleteFormById = async (req, res) => { // this will delete the form by id 
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: 'Form ID is required' });
@@ -99,11 +101,11 @@ const deleteFormById = async (req, res) => {
     }
 };
 
-const changeFormStatus = async (req, res) => {
-    const { id } = req.params; 
-    const { status } = req.body; 
+const changeFormStatus = async (req, res) => { // this will change the status of the form 
+    const { id } = req.params;
+    const { status } = req.body;
 
-  
+
     const validStatuses = ['Active', 'Paused', 'Disabled'];
     if (!validStatuses.includes(status)) {
         return res.status(400).json({ message: 'Invalid status.' });
@@ -125,6 +127,54 @@ const changeFormStatus = async (req, res) => {
     }
 };
 
+const getDeletedByUserId = async (req, res) => {
+    const { Id } = req.params;
+    const { skip, limit } = req.query;
+
+    try {
+        const total = await Form.countDocuments({
+            formOwnerId: Id,
+            status: 'Disabled'
+        });
+
+        const drafts = await Form.find({
+            formOwnerId: Id,
+            status: 'Disabled'
+        })
+            .skip(parseInt(skip))
+            .limit(parseInt(limit));
+
+        res.status(200).send({ drafts, total });
+    } catch (error) {
+        res.status(400).send({ error: 'Error fetching drafts', details: error });
+    }
+};
+
+const getDraftsByUserId = async (req, res) => {
+    const { id } = req.params;
+    const { skip, limit } = req.query;
+    
+    try {
+        const total = await Form.countDocuments({
+            formOwnerId: id,
+            status: { $in: ['Active', 'Paused'] },
+            questions: { $eq: [] }
+        });
+        const forms = await Form.find({
+            formOwnerId: id,
+            status: { $in: ['Active', 'Paused'] },
+            questions: { $eq: [] }
+        })
+            .skip(parseInt(skip))
+            .limit(parseInt(limit));
+
+        res.status(200).send({ forms, total });
+    } catch (error) {
+        res.status(400).send({ error: 'Error fetching forms', details: error });
+    }
+};
+
+
 
 
 
@@ -134,5 +184,7 @@ export default {
     getFormsByOwnerId,
     getFormById,
     deleteFormById,
-    changeFormStatus
+    changeFormStatus,
+    getDeletedByUserId,
+    getDraftsByUserId
 }

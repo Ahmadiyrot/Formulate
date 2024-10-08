@@ -14,4 +14,8 @@ router.delete("/DeleteForm/:id", formsController.deleteFormById);
 
 router.patch("/ChangeFormStatus/:id", formsController.changeFormStatus);
 
+router.get("/GetDeleted/:Id", formsController.getDeletedByUserId);
+
+router.get("/GetDrafts/:id", formsController.getDraftsByUserId)
+
 export default router

@@ -1,10 +1,11 @@
-import Form from "./Form.js"
 import useAuth from "../../hooks/useAuth.js";
 import React, { useState } from 'react';
 import FormsPage from './FormsPage.js'
+import DeletedTab from "./DeletedTab.js";
+import DraftsTab from "./DraftsTab.js";
 
-const DraftsTab = () => <div>Drafts Content</div>;
-const DeletedTab = () => <div>Deleted Content</div>;
+
+
 const SettingsTab = () => <div>Settings Content</div>;
 const SupportTab = () => <div>Support Content</div>;
 

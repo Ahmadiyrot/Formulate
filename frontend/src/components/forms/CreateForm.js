@@ -10,7 +10,7 @@ const CreateForm = () => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('active');
+    const [status, setStatus] = useState('Active');
     const MAX_TITLE_LENGTH = 50;
     const MAX_DESCRIPTION_LENGTH = 250;
 

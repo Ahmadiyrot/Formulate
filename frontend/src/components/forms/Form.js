@@ -25,7 +25,7 @@ const Form = (props) => {
 
     const confirmDelete = async () => {
         try {
-            const response = await axios.delete(`/DeleteForm/${props.id}`);
+            await axios.delete(`/DeleteForm/${props.id}`);
             window.location.reload();
         } catch (error) {
             console.error('Error deleting:', error);
@@ -48,6 +48,11 @@ const Form = (props) => {
         setShowChangeStatusModal(false);
     };
 
+    const handleAddQuestions = () => {
+        
+        
+    };
+
     return (
         <div>
             <div className="bg-white container p-3" style={{ maxWidth: "400px", borderRadius: "15px" }}>
@@ -55,27 +60,30 @@ const Form = (props) => {
                     <div className='col'>
                         <p style={{ fontWeight: "bold" }}>{props.formName}</p>
                     </div>
-                    <div className='col-3 d-flex justify-content-end flex-column'>
-                        <div className="dropdown">
-                            <button
-                                className="btn"
-                                type="button"
-                                onClick={toggleDropdown}
-                                aria-expanded={isDropdownOpen}
-                                style={{ border: "none", background: "transparent" }}
-                            >
-                                <i className="bi bi-three-dots-vertical" />
-                            </button>
-                            <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} style={{ right: 0 }}>
-                                <li>
-                                    <button className="dropdown-item" onClick={() => handleOptionClick('changeStatus')}>Change Status</button>
-                                </li>
-                                <li>
-                                    <button className="dropdown-item" onClick={() => handleOptionClick('delete')}>Delete</button>
-                                </li>
-                            </ul>
+
+                    {!props.deleted && (
+                        <div className='col-3 d-flex justify-content-end flex-column'>
+                            <div className="dropdown">
+                                <button
+                                    className="btn"
+                                    type="button"
+                                    onClick={toggleDropdown}
+                                    aria-expanded={isDropdownOpen}
+                                    style={{ border: "none", background: "transparent" }}
+                                >
+                                    <i className="bi bi-three-dots-vertical" />
+                                </button>
+                                <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} style={{ right: 0 }}>
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => handleOptionClick('changeStatus')}>Change Status</button>
+                                    </li>
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => handleOptionClick('delete')}>Delete</button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className="row d-flex justify-content-center p-1 mb-2">
@@ -83,11 +91,22 @@ const Form = (props) => {
                         <span style={{ fontWeight: "bold" }}>Date created:</span> {props.date}
                     </small>
                 </div>
+
                 <div className="row">
                     <div className="col-8 d-flex align-items-center">
-                        <button onClick={() => navigate(`/Responses/${props.id}`)} className="btn w-100 rounded-5 responsesButton">
-                            View responses
-                        </button>
+                        {props.addelements ? (
+                            <button onClick={() => navigate(`/AddElements/${props.id}`)}  className="btn w-100 rounded-5 responsesButton">
+                                Add questions
+                            </button>
+                        ) : props.button ? (
+                            <button onClick={() => navigate(`/Responses/${props.id}`)} className="btn w-100 rounded-5 responsesButton">
+                                View responses
+                            </button>
+                        ) : (
+                            <button onClick={() => console.log('Retrieve action triggered', props.id)} className="btn w-100 rounded-5 responsesButton">
+                                Retrieve
+                            </button>
+                        )}
                     </div>
                     <div className="col-4 d-flex align-items-center justify-content-end">
                         <div className="w-100 h-100 d-flex justify-content-center align-items-center rounded-2" style={{ backgroundColor: props.color, color: props.color2, width: props.cardwidth }}>

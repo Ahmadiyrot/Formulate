@@ -2,42 +2,40 @@ import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import Form from "./Form";
 import axios from "../../api/axios";
-import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 
-const FormsPage = () => {
+const DeletedTab = () => {
     const { auth } = useAuth();
     const ownerId = auth.userInfo._id;
-    const [forms, setForms] = useState([]);
+    const [drafts, setDrafts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const formsPerPage = 9;
-    const navigate = useNavigate();
+    const draftsPerPage = 9;
 
     useEffect(() => {
-        const fetchForms = async () => {
+        const fetchDrafts = async () => {
             setLoading(true);
             try {
-                const skip = (page - 1) * formsPerPage;
-                const response = await axios.get(`/forms/${ownerId}?skip=${skip}&limit=${formsPerPage}`);
-                console.log(response)
-                if (response.data.forms) {
-                    setForms(response.data.forms);
-                    setTotalPages(Math.ceil(response.data.total / formsPerPage));
+                const skip = (page - 1) * draftsPerPage;
+                const response = await axios.get(`/GetDeleted/${ownerId}?skip=${skip}&limit=${draftsPerPage}`);
+                console.log(response);
+                if (response.data.drafts) {
+                    setDrafts(response.data.drafts);
+                    setTotalPages(Math.ceil(response.data.total / draftsPerPage));
                 } else {
-                    setForms([]);
+                    setDrafts([]);
                 }
             } catch (err) {
                 setError(err.message);
-                setForms([]);
+                setDrafts([]);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchForms();
+        fetchDrafts();
     }, [page, ownerId]);
 
     const handlePageChange = (newPage) => {
@@ -52,39 +50,27 @@ const FormsPage = () => {
             <div className="row">
 
                 <div className="col-9">
-                    <div className="row d-flex justify-content-center">
-                        <button className="create-form-button" onClick={() => navigate('/createform')}>
-                            Create Form
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
-                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                            </svg>
-                        </button>
-                    </div>
-
                     <div className="d-flex flex-wrap justify-content-center">
-                        {forms.length > 0 ? (
-                            forms.map((form) => (
+                        {drafts.length > 0 ? (
+                            drafts.map((form) => (
                                 <div key={form._id} style={{ width: "300px", margin: "10px" }}>
                                     <Form
                                         formName={form.formName}
                                         date={form.createdAt}
-                                        color={form.status === 'Paused' ? '#FCEB9F' : '#D9F9E6'}
+                                        color="#FDE9E9"
                                         status={form.status}
-                                        color2={form.status === 'Paused' ? '#C8811A' : '#2F9461'}
+                                        color2="#CD3636"
                                         id={form._id}
-                                        deleted={false}
-                                        button={true}
+                                        deleted={true}
+                                        button={false}
                                     />
                                 </div>
                             ))
                         ) : (
                             <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "200px" }}>
                                 <p style={{ fontSize: "1.5em", fontWeight: "bold", color: "grey" }}>
-                                    No forms found
+                                    No drafts found
                                 </p>
-                                <button onClick={() => navigate('/CreateForm')} className="btn btn-primary mt-2 rounded-5">
-                                    Create a New Form
-                                </button>
                             </div>
                         )}
                     </div>
@@ -99,6 +85,7 @@ const FormsPage = () => {
                         </div>
                     )}
                 </div>
+
                 <div className="col-3">
                     <div className="p-3 border bg-light">Small Column</div>
                 </div>
@@ -107,4 +94,4 @@ const FormsPage = () => {
     );
 };
 
-export default FormsPage;
+export default DeletedTab;
