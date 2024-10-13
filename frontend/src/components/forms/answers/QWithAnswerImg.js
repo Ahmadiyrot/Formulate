@@ -3,11 +3,11 @@ import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
 
-
-const QWithImgAnswer = ({ question, uploadedFileUrl, setUploadedFileUrl }) => {
+const QWithAnswerImg = ({ question, uploadedFileUrl, setUploadedFileUrl, readOnly }) => {
     const [uploading, setUploading] = useState(false);
     const [preview, setPreview] = useState(null);
-    const { id } = useParams()
+    const { id } = useParams();
+
     useEffect(() => {
         if (uploadedFileUrl) {
             if (uploadedFileUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
@@ -60,14 +60,15 @@ const QWithImgAnswer = ({ question, uploadedFileUrl, setUploadedFileUrl }) => {
         },
         onDrop,
         multiple: false,
+        disabled: readOnly,
     });
 
     return (
         <div
-            className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3"
-            style={{ backgroundColor: "#fff", padding: "5px" }}
+            className="w-100 mt-2 mb-2 d-flex flex-column align-items-center"
+            style={{ backgroundColor: "#fff", padding: "10px", borderRadius: "8px", border: "1px solid #ccc" }}
         >
-            <div className="position-relative w-100">
+            <div className="w-100 mb-2">
                 <input
                     type="text"
                     className="w-100 ps-2 rounded-2 textArea-Textinput"
@@ -83,7 +84,6 @@ const QWithImgAnswer = ({ question, uploadedFileUrl, setUploadedFileUrl }) => {
                 />
             </div>
 
-            {/* Uploaded File Preview */}
             {uploadedFileUrl && (
                 preview ? (
                     <div
@@ -95,60 +95,79 @@ const QWithImgAnswer = ({ question, uploadedFileUrl, setUploadedFileUrl }) => {
                             alt="Preview"
                             style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
                         />
-                        <i
-                            className="bi bi-x-lg position-absolute"
-                            style={{
-                                right: '10px',
-                                top: '10px',
-                                cursor: 'pointer',
-                                backgroundColor: '#fff',
-                                borderRadius: '50%',
-                            }}
-                            onClick={() => setUploadedFileUrl('')}
-                        />
+                        {!readOnly && (
+                            <i
+                                className="bi bi-x-lg position-absolute"
+                                style={{
+                                    right: '10px',
+                                    top: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '50%',
+                                }}
+                                onClick={() => setUploadedFileUrl('')}
+                            />
+                        )}
                     </div>
                 ) : (
                     <div
                         className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
                         style={{ backgroundColor: '#f8f9fa', minWidth: "200px", position: 'relative' }}
                     >
-                        <i className="bi bi-file-earmark-pdf" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
-                        <a href={uploadedFileUrl} target="_blank" rel="noopener noreferrer">{uploadedFileUrl}</a>
-                        <i
-                            className="bi bi-x-lg position-absolute"
-                            style={{
-                                right: '10px',
-                                top: '10px',
-                                cursor: 'pointer',
-                                backgroundColor: '#fff',
-                                borderRadius: '50%',
-                            }}
-                            onClick={() => setUploadedFileUrl('')}
-                        />
+                        <i className="bi bi-file-earmark" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
+                        <a href={uploadedFileUrl} target="_blank" rel="noopener noreferrer">
+                            {uploadedFileUrl.split('/').pop()}
+                        </a>
+                        {!readOnly && (
+                            <i
+                                className="bi bi-x-lg position-absolute"
+                                style={{
+                                    right: '10px',
+                                    top: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '50%',
+                                }}
+                                onClick={() => setUploadedFileUrl('')}
+                            />
+                        )}
                     </div>
                 )
             )}
 
-            {/* File Upload Dropzone */}
-            <div
-                {...getRootProps()}
-                className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
-                style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px" }}
-            >
-                <input {...getInputProps()} />
-                <i className="bi bi-file-image" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
-                <span>Upload Image or PDF</span>
-            </div>
+            {!readOnly && (
+                <>
+                    <div
+                        {...getRootProps()}
+                        className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
+                        style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px" }}
+                    >
+                        <input {...getInputProps()} />
+                        <i className="bi bi-upload" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
+                        <span>Upload Image or PDF</span>
+                    </div>
 
-            {/* Uploading Indicator */}
-            {uploading && <p>Uploading file...</p>}
+                    {uploading && <p>Uploading file...</p>}
 
-            {/* Clear Input Button */}
-            <button onClick={clearInput} className="btn btn-secondary mt-2">
-                Clear Uploaded File
-            </button>
+                    <button onClick={clearInput} className="btn btn-secondary mt-2">
+                        Clear Uploaded File
+                    </button>
+                </>
+            )}
+
+            {readOnly && !uploadedFileUrl && (
+                <div
+                    className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
+                    style={{
+                        backgroundColor: '#f8f9fa',
+                        minWidth: "200px",
+                    }}
+                >
+                    <span>No file uploaded</span>
+                </div>
+            )}
         </div>
     );
 };
 
-export default QWithImgAnswer;
+export default QWithAnswerImg;

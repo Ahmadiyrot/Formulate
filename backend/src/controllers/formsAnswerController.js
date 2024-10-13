@@ -76,6 +76,26 @@ const isAnswered = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
+const getAnswerById = async (req, res) => {
+    const { answerId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(answerId)) {
+        return res.status(400).send({ error: "Invalid answer ID" });
+    }
+
+    try {
+        const formAnswer = await FormAnswer.findById(answerId).populate('AnsweredBy', 'email');
+
+        if (!formAnswer) {
+            return res.status(404).send({ error: "Form answer not found" });
+        }
+
+        res.status(200).send(formAnswer);
+    } catch (error) {
+        console.error('Error fetching form answer:', error);
+        res.status(500).send({ error: "Internal server error" });
+    }
+};
 
 
 
@@ -83,5 +103,6 @@ export default {
     createFormAnswer,
     deleteFormAnswer,
     getFormAnswers,
-    isAnswered
+    isAnswered,
+    getAnswerById
 }

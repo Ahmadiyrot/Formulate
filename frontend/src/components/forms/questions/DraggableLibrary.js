@@ -1,16 +1,64 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import TextAreaQ from './TextAreaQ';
 import RatingQ from './RatingQ';
 import QWithImg from './QWithImg';
 import QTrueOrFalse from './QTrueOrFalse';
-import QWithColorPicker from './QWithColorPicker.js'
+import QWithColorPicker from './QWithColorPicker.js';
 import QWithTextAndImgAns from './QWithTextAndImgAns.js';
 import QWithImgAnswer from './QWithImgAnswer.js';
 import QWithMultiAnswer from './QWithMultiAnswer.js';
 
 const DraggableLibrary = () => {
+    const [searchQuery, setSearchQuery] = useState('');
     const sectionsRef = useRef([]);
+
+    const draggableItems = [
+        {
+            id: 'TextAreaQ',
+            name: 'Text Area Question',
+            component: <TextAreaQ inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'RatingQ',
+            name: 'Linear scale',
+            component: <RatingQ inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QWithImg',
+            name: 'Question with a file attachment',
+            component: <QWithImg inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QTrueOrFalse',
+            name: 'Yes or No',
+            component: <QTrueOrFalse inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QWithColorPicker',
+            name: 'Question with Color Picker',
+            component: <QWithColorPicker inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QWithTextAndImgAns',
+            name: 'Question with Text or Image Answer',
+            component: <QWithTextAndImgAns inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QWithImgAnswer',
+            name: 'Question with File Answer',
+            component: <QWithImgAnswer inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'QWithMultiAnswer',
+            name: 'Question with Multiple Answers',
+            component: <QWithMultiAnswer inputValue="" setInputValue={() => { }} />,
+        },
+    ];
+
+    const filteredItems = draggableItems.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
@@ -34,160 +82,57 @@ const DraggableLibrary = () => {
                 }
             });
         };
-    }, []);
+    }, [filteredItems]);
 
     const assignRef = (el, index) => {
         sectionsRef.current[index] = el;
     };
 
     return (
-        <Droppable droppableId="draggable-area" isDropDisabled={true}>
-            {(provided) => (
-                <div
-                    className="d-flex justify-content-center flex-column"
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                >
-                    <Draggable draggableId="TextAreaQ" index={0}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 0);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <TextAreaQ inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
+        <div>
+            <div className="mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search components..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
 
-                    <Draggable draggableId="RatingQ" index={1}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 1);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <RatingQ inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QWithImg" index={2}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 2);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QWithImg inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QTrueOrFalse" index={3}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 3);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QTrueOrFalse inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QWithColorPicker" index={4}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 4);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QWithColorPicker inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QWithTextAndImgAns" index={5}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 5);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QWithTextAndImgAns inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QWithImgAnswer" index={6}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 6);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QWithImgAnswer inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    <Draggable draggableId="QWithMultiAnswer" index={7}>
-                        {(provided) => (
-                            <div
-                                ref={(el) => {
-                                    provided.innerRef(el);
-                                    assignRef(el, 7);
-                                }}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mb-2 fade-in"
-                                style={{ ...provided.draggableProps.style }}
-                            >
-                                <QWithMultiAnswer inputValue="" setInputValue={() => { }} />
-                            </div>
-                        )}
-                    </Draggable>
-
-                    {provided.placeholder}
-                </div>
-            )}
-        </Droppable>
+            <Droppable droppableId="draggable-area" isDropDisabled={true}>
+                {(provided) => (
+                    <div
+                        className="d-flex justify-content-center flex-column"
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                    >
+                        {filteredItems.map((item, index) => (
+                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                {(provided) => (
+                                    <div
+                                        ref={(el) => {
+                                            provided.innerRef(el);
+                                            assignRef(el, index);
+                                        }}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        className="mb-2 fade-in"
+                                        style={{ ...provided.draggableProps.style }}
+                                    >
+                                        <div className="text-black d-flex justify-content-center">
+                                            <strong>{item.name}</strong>
+                                        </div>
+                                        {item.component}
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </div>
     );
 };
 

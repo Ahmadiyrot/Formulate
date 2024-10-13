@@ -54,6 +54,7 @@ const QWithMultiAnswer = ({ inputValue, setInputValue }) => {
                         value={answer}
                         onChange={(e) => handleAnswerChange(e.target.value, index)}
                         style={{ height: '100px', resize: 'none' }} 
+                        readOnly
                     />
                     {index > 0 && (
                         <i

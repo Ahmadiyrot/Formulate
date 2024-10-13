@@ -1,6 +1,6 @@
 import React from "react";
 
-const QTrueOrFalseAnswer = ({ question, selectedOption, onOptionChange }) => {
+const QTrueOrFalseAnswer = ({ question, selectedOption, onOptionChange, readOnly }) => {
     return (
         <div
             className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3"
@@ -31,7 +31,8 @@ const QTrueOrFalseAnswer = ({ question, selectedOption, onOptionChange }) => {
                             name={`option-${question}`}
                             value="No"
                             checked={selectedOption === "No"}
-                            onChange={() => onOptionChange("No")}
+                            onChange={() => !readOnly && onOptionChange("No")}
+                            disabled={readOnly}
                         />
                         <label htmlFor={`no-${question}`} className="d-flex align-items-center">
                             <i
@@ -49,7 +50,8 @@ const QTrueOrFalseAnswer = ({ question, selectedOption, onOptionChange }) => {
                             name={`option-${question}`}
                             value="Yes"
                             checked={selectedOption === "Yes"}
-                            onChange={() => onOptionChange("Yes")}
+                            onChange={() => !readOnly && onOptionChange("Yes")}
+                            disabled={readOnly}
                         />
                         <label htmlFor={`yes-${question}`} className="d-flex align-items-center">
                             <i
@@ -67,7 +69,8 @@ const QTrueOrFalseAnswer = ({ question, selectedOption, onOptionChange }) => {
                             name={`option-${question}`}
                             value="Doesn't Matter"
                             checked={selectedOption === "Doesn't Matter"}
-                            onChange={() => onOptionChange("Doesn't Matter")}
+                            onChange={() => !readOnly && onOptionChange("Doesn't Matter")}
+                            disabled={readOnly}
                         />
                         <label htmlFor={`dont-matter-${question}`} className="d-flex align-items-center">
                             <i

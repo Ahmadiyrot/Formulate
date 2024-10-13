@@ -1,22 +1,23 @@
-import Rating from 'react-rating';
 import React from 'react';
+import Rating from 'react-rating';
 
-const RatingQAnswer = ({ question, rating, setRating }) => {
+const RatingQAnswer = ({ question, rating, setRating, readOnly }) => {
     const clearRating = () => {
         setRating(0);
     };
 
     return (
-        <div className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3" 
-            style={{ backgroundColor: "#fff", padding: "5px", borderRadius: "8px", border: "1px solid #ccc" }}>
-            
+        <div
+            className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3"
+            style={{ backgroundColor: "#fff", padding: "5px", borderRadius: "8px", border: "1px solid #ccc" }}
+        >
             <div className="position-relative w-100">
                 <input
                     type="text"
                     className="w-100 ps-2 rounded-2 textArea-Textinput"
                     placeholder="Question"
                     value={question}
-                    readOnly 
+                    readOnly
                     style={{ backgroundColor: "#f0f0f0", border: "1px solid #ccc", height: "40px", fontSize: "16px" }}
                 />
             </div>
@@ -28,26 +29,29 @@ const RatingQAnswer = ({ question, rating, setRating }) => {
                     emptySymbol={<span className="empty-circle" style={{ margin: '0 5px' }}>⚪</span>}
                     fullSymbol={<span className="full-circle" style={{ margin: '0 5px' }}>⚫</span>}
                     onChange={value => {
-                        setRating(value); 
-                        
+                        if (!readOnly && setRating) {
+                            setRating(value);
+                        }
                     }}
                     fractions={2}
                     stop={10}
-                    readonly={false} 
+                    readonly={readOnly}
                 />
                 <p>Very Satisfied</p>
             </div>
 
-            <i
-                className="bi bi-x-lg position-absolute"
-                style={{
-                    right: '10px',
-                    top: '10px',
-                    cursor: 'pointer',
-                    backgroundColor: 'transparent',
-                }}
-                onClick={clearRating}
-            />
+            {!readOnly && (
+                <i
+                    className="bi bi-x-lg position-absolute"
+                    style={{
+                        right: '10px',
+                        top: '10px',
+                        cursor: 'pointer',
+                        backgroundColor: 'transparent',
+                    }}
+                    onClick={clearRating}
+                />
+            )}
         </div>
     );
 };

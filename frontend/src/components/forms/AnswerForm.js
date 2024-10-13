@@ -246,6 +246,7 @@ const AnswerForm = () => {
                         question={question.inputValue}
                         uploadedFileUrl={answers[index]?.uploadedFileUrl || ''}
                         setUploadedFileUrl={(newUrl) => handleFileUrlChange(index, newUrl)}
+                        readOnly={false}
                     />
                 );
             case 'QWithMultiAnswer':

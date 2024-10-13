@@ -2,7 +2,12 @@ import React from "react";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/css";
 
-const QWithColorPickerAnswer = ({ question, selectedColors, onColorsChange }) => {
+const QWithColorPickerAnswer = ({
+    question,
+    selectedColors,
+    onColorsChange,
+    readOnly,
+}) => {
     const [color, setColor] = useColor("hex", "#ffffff");
 
     const handleAddColor = () => {
@@ -32,20 +37,24 @@ const QWithColorPickerAnswer = ({ question, selectedColors, onColorsChange }) =>
                 />
             </div>
 
-            <div className="mb-3">
-                <ColorPicker
-                    width={300}
-                    height={150}
-                    color={color}
-                    onChange={setColor}
-                    hideHSV
-                    dark
-                />
-            </div>
+            {!readOnly && (
+                <>
+                    <div className="mb-3">
+                        <ColorPicker
+                            width={300}
+                            height={150}
+                            color={color}
+                            onChange={setColor}
+                            hideHSV
+                            dark
+                        />
+                    </div>
 
-            <button onClick={handleAddColor} className="btn btn-primary mt-2">
-                Add Color
-            </button>
+                    <button onClick={handleAddColor} className="btn btn-primary mt-2">
+                        Add Color
+                    </button>
+                </>
+            )}
 
             {selectedColors.length > 0 && (
                 <div className="d-flex flex-wrap mt-3">

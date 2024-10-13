@@ -25,7 +25,9 @@ const Form = (props) => {
 
     const confirmDelete = async () => {
         try {
-            await axios.delete(`/DeleteForm/${props.id}`);
+            await axios.patch(`/ChangeFormStatus/${props.id}`, {
+                status: "Disabled"
+            });
             window.location.reload();
         } catch (error) {
             console.error('Error deleting:', error);
@@ -37,10 +39,15 @@ const Form = (props) => {
         setShowDeleteModal(false);
     };
 
-    const saveStatus = () => {
-        console.log('Form ID:', props.id);
-        console.log('Selected Status:', selectedStatus);
-        // Here you would fetch to the backend
+    const saveStatus = async () => {
+        try {
+            await axios.patch(`/ChangeFormStatus/${props.id}`, {
+                status: selectedStatus
+            });
+            window.location.reload();
+        } catch (error) {
+            console.error('Error deleting:', error);
+        }
         setShowChangeStatusModal(false);
     };
 
@@ -49,8 +56,8 @@ const Form = (props) => {
     };
 
     const handleAddQuestions = () => {
-        
-        
+
+
     };
 
     return (
@@ -95,7 +102,7 @@ const Form = (props) => {
                 <div className="row">
                     <div className="col-8 d-flex align-items-center">
                         {props.addelements ? (
-                            <button onClick={() => navigate(`/AddElements/${props.id}`)}  className="btn w-100 rounded-5 responsesButton">
+                            <button onClick={() => navigate(`/AddElements/${props.id}`)} className="btn w-100 rounded-5 responsesButton">
                                 Add questions
                             </button>
                         ) : props.button ? (

@@ -17,6 +17,7 @@ import LoadingPage from "./components/loadingpage/LoadingPage";
 import AddElements from "./components/forms/AddElements.js"
 import CreateForm from "./components/forms/CreateForm.js"
 import AnswerForm from './components/forms/AnswerForm.js';
+import ViewForm from './components/forms/ViewForm.js';
 
 
 
@@ -38,6 +39,8 @@ function App() {
               <Route path='/TabsPage' element={<TabsPage />} />
               <Route path="/Responses/:id" element={<ResponseCard />} />
               <Route path="/AnswerForm/:id" element={<AnswerForm />} />
+              <Route path="View/:ID" element={<ViewForm />} />
+
 
             </Route>
           </Route>

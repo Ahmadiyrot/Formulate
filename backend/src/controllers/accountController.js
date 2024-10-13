@@ -9,6 +9,7 @@ const createAccount = async (req, res) => {
         await user.save();
         const { accessToken, refreshToken } = await user.generateAuthToken();
         res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+
         res.status(201).send({ user, token: accessToken, refreshToken });
     } catch (error) {
         res.status(400).send(error);
@@ -19,6 +20,7 @@ const signInAccount = async (req, res) => {
     try {
         const user = await Account.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken();
+        res.cookie('flag', true);
         res.status(200).send({ user, token: token });
     } catch (error) {
         res.status(400).send()

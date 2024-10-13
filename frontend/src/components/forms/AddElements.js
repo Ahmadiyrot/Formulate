@@ -113,7 +113,7 @@ const AddElements = () => {
                     <QWithImg
                         inputValue={element.inputValue}
                         setInputValue={(value) => handleInputChange(element.id, value)}
-                        uploadedFile={element.uploadedFile} // Pass uploaded file
+                        uploadedFile={element.uploadedFile} 
                         setUploadedFile={(file) => handleFileChange(element.id, file)}
                         dropzoneEnabled={true}
                     />
@@ -151,6 +151,7 @@ const AddElements = () => {
                     <QWithMultiAnswer
                         inputValue={element.inputValue}
                         setInputValue={(value) => handleInputChange(element.id, value)}
+                        readOnly={false}
                     />
                 );
             default:

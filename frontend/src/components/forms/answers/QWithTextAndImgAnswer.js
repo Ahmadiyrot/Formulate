@@ -2,14 +2,22 @@ import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
-const QWithTextAndImgAnswer = ({ question, answer, setAnswer, uploadedFileUrl, setUploadedFileUrl }) => {
+
+const QWithTextAndImgAnswer = ({
+    question,
+    answer,
+    setAnswer,
+    uploadedFileUrl,
+    setUploadedFileUrl,
+    readOnly,
+}) => {
     const [preview, setPreview] = useState(null);
     const [uploading, setUploading] = useState(false);
-    const { id } = useParams()
+    const { id } = useParams();
 
     useEffect(() => {
         if (uploadedFileUrl) {
-            if (uploadedFileUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
+            if (uploadedFileUrl.match(/\.(jpeg|jpg|gif|png)$/i)) {
                 setPreview(uploadedFileUrl);
             } else {
                 setPreview(null);
@@ -38,7 +46,6 @@ const QWithTextAndImgAnswer = ({ question, answer, setAnswer, uploadedFileUrl, s
         uploadTask.on(
             'state_changed',
             (snapshot) => {
-
             },
             (error) => {
                 console.error('Upload failed:', error);
@@ -61,11 +68,12 @@ const QWithTextAndImgAnswer = ({ question, answer, setAnswer, uploadedFileUrl, s
         },
         onDrop,
         multiple: false,
+        disabled: readOnly,
     });
 
     return (
         <div
-            className="w-100 mt-2 mb-2 d-flex justify-content-center flex-column row-gap-2 rounded-3"
+            className="w-100 mt-2 mb-2 d-flex flex-column justify-content-center rounded-3"
             style={{ backgroundColor: "#fff", padding: "5px" }}
         >
             <div className="position-relative w-100">
@@ -88,28 +96,31 @@ const QWithTextAndImgAnswer = ({ question, answer, setAnswer, uploadedFileUrl, s
                 <textarea
                     className="w-100 p-1 ps-2 textArea-Textinput rounded-2"
                     value={answer}
-                    onChange={(e) => setAnswer(e.target.value)}
+                    onChange={(e) => !readOnly && setAnswer(e.target.value)}
                     placeholder="Answer"
+                    readOnly={readOnly}
                     style={{
                         resize: "none",
                         backgroundColor: "#f0f0f0",
                         height: "120px",
                     }}
                 />
-                <i
-                    className="bi bi-x-lg position-absolute"
-                    style={{
-                        right: '10px',
-                        top: '20%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'pointer',
-                        backgroundColor: 'transparent',
-                    }}
-                    onClick={() => setAnswer('')}
-                />
+                {!readOnly && (
+                    <i
+                        className="bi bi-x-lg position-absolute"
+                        style={{
+                            right: '10px',
+                            top: '20%',
+                            transform: 'translateY(-50%)',
+                            cursor: 'pointer',
+                            backgroundColor: 'transparent',
+                        }}
+                        onClick={() => setAnswer('')}
+                    />
+                )}
             </div>
 
-            {uploadedFileUrl && (
+            {uploadedFileUrl ? (
                 preview ? (
                     <div
                         className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
@@ -120,55 +131,76 @@ const QWithTextAndImgAnswer = ({ question, answer, setAnswer, uploadedFileUrl, s
                             alt="Preview"
                             style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
                         />
-                        <i
-                            className="bi bi-x-lg position-absolute"
-                            style={{
-                                right: '10px',
-                                top: '10px',
-                                cursor: 'pointer',
-                                backgroundColor: '#fff',
-                                borderRadius: '50%',
-                            }}
-                            onClick={() => setUploadedFileUrl('')}
-                        />
+                        {!readOnly && (
+                            <i
+                                className="bi bi-x-lg position-absolute"
+                                style={{
+                                    right: '10px',
+                                    top: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '50%',
+                                }}
+                                onClick={() => setUploadedFileUrl('')}
+                            />
+                        )}
                     </div>
                 ) : (
                     <div
                         className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
                         style={{ backgroundColor: '#f8f9fa', minWidth: "200px", position: 'relative' }}
                     >
-                        <i className="bi bi-file-earmark-pdf" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
-                        <a href={uploadedFileUrl} target="_blank" rel="noopener noreferrer">{uploadedFileUrl}</a>
-                        <i
-                            className="bi bi-x-lg position-absolute"
-                            style={{
-                                right: '10px',
-                                top: '10px',
-                                cursor: 'pointer',
-                                backgroundColor: '#fff',
-                                borderRadius: '50%',
-                            }}
-                            onClick={() => setUploadedFileUrl('')}
-                        />
+                        <i className="bi bi-file-earmark" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
+                        <a href={uploadedFileUrl} target="_blank" rel="noopener noreferrer">
+                            {uploadedFileUrl.split('/').pop()}
+                        </a>
+                        {!readOnly && (
+                            <i
+                                className="bi bi-x-lg position-absolute"
+                                style={{
+                                    right: '10px',
+                                    top: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '50%',
+                                }}
+                                onClick={() => setUploadedFileUrl('')}
+                            />
+                        )}
                     </div>
                 )
-            )}
+            ) : readOnly ? (
+                <div
+                    className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
+                    style={{
+                        cursor: 'not-allowed',
+                        backgroundColor: '#f8f9fa',
+                        minWidth: "200px",
+                    }}
+                >
+                    <span>No file uploaded</span>
+                </div>
+            ) : null}
 
-            <div
-                {...getRootProps()}
-                className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
-                style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px" }}
-            >
-                <input {...getInputProps()} />
-                <i className="bi bi-file-image" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
-                <span>Upload Image or PDF</span>
-            </div>
+            {!readOnly && (
+                <div
+                    {...getRootProps()}
+                    className="d-flex align-items-center justify-content-center p-2 border rounded m-3"
+                    style={{ cursor: 'pointer', backgroundColor: '#f8f9fa', minWidth: "200px" }}
+                >
+                    <input {...getInputProps()} />
+                    <i className="bi bi-upload" style={{ fontSize: '1.5rem', marginRight: '10px' }}></i>
+                    <span>Upload Image or PDF</span>
+                </div>
+            )}
 
             {uploading && <p>Uploading file...</p>}
 
-            <button onClick={clearInput} className="btn btn-secondary mt-2">
-                Clear Answer and File
-            </button>
+            {!readOnly && (
+                <button onClick={clearInput} className="btn btn-secondary mt-2">
+                    Clear Answer and File
+                </button>
+            )}
         </div>
     );
 };

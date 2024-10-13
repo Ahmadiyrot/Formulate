@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import FormsPage from './FormsPage.js'
 import DeletedTab from "./DeletedTab.js";
 import DraftsTab from "./DraftsTab.js";
+import SettingsTab from "./SettingsTab.js";
 
 
 
-const SettingsTab = () => <div>Settings Content</div>;
 const SupportTab = () => <div>Support Content</div>;
 
 const TabsPage = () => {
@@ -32,16 +32,13 @@ const TabsPage = () => {
 
     return (
         <div className="container-fluid">
-            {/* First Row */}
             <div className="row">
                 <div className="col d-flex justify-content-start flex-row align-items-center p-3">
                     <h2 className="ps-2 pe-2 text-white">Welcome back! <br />&emsp;&emsp;&emsp;&emsp;&emsp;{auth?.userName}</h2>
                 </div>
             </div>
 
-            {/* Second Row */}
             <div className="row">
-                {/* First Column (Tabs) */}
                 <div className="col-2">
                     <ul className="nav flex-column nav-pills custom-nav">
                         <li className="nav-item">
@@ -87,7 +84,6 @@ const TabsPage = () => {
                     </ul>
                 </div>
 
-                {/* Main Content Column */}
                 <div className="col-10">
                     <div className=" mt-3">
                         <div className="tab-pane fade show active">{renderTabContent()}</div>
