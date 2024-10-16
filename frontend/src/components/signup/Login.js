@@ -51,7 +51,6 @@ const Login = () => {
                 }
 
             )
-            console.log(response?.data)
             const accessToken = response?.data?.token.refreshToken;
 
             setAuth({ user, pwd, accessToken })
@@ -61,7 +60,6 @@ const Login = () => {
             navigate(from, { replace: true });
 
         } catch (error) {
-            console.log(error)
             if (!error.response) {
                 setErrMsg('No server response ')
             } else if (error.response?.status === 400) {

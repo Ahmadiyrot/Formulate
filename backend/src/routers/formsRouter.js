@@ -18,4 +18,7 @@ router.get("/GetDeleted/:Id", formsController.getDeletedByUserId);
 
 router.get("/GetDrafts/:id", formsController.getDraftsByUserId)
 
+router.patch("/ChangePinStatus/:id", formsController.changePinStatus);
+
+
 export default router

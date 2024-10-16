@@ -24,12 +24,15 @@ const formSchema = new mongoose.Schema({
         type: Object,
         default: {}
     }],
+    pinned: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true,
     toJSON: { getters: true },
     toObject: { getters: true }
 });
-
 
 formSchema.path('createdAt').get(function (value) {
     return moment(value).format('YYYY-MM-DD');

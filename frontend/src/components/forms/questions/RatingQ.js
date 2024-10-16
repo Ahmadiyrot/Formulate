@@ -36,7 +36,6 @@ const RatingQ = ({ inputValue, setInputValue, rating, setRating }) => {
                     fullSymbol={<span className="full-circle" style={{ margin: '0 5px' }}>⚫</span>}
                     onChange={value => {
                         setRating(value);
-                        console.log(`Selected value: ${value}`);
                     }}
                     fractions={2}
                     stop={10}

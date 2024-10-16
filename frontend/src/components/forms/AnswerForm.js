@@ -307,7 +307,6 @@ const AnswerForm = () => {
             }),
         };
 
-        console.log(submissionData);
 
         try {
             const response = await axios.post('/Answer', submissionData);

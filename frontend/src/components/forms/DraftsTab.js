@@ -22,11 +22,9 @@ const DraftTab = () => {
             try {
                 const skip = (page - 1) * draftsPerPage;
                 const response = await axios.get(`/GetDrafts/${ownerId}?skip=${skip}&limit=${draftsPerPage}`);
-                console.log(response);
                 if (response.data) {
                     setDrafts(response.data.forms);
                     setTotalPages(Math.ceil(response.data.total / draftsPerPage));
-                    console.log('hello')
                 } else {
                     setDrafts([]);
                 }

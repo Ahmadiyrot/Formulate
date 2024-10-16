@@ -26,7 +26,6 @@ const AddElements = () => {
     const [finalFormData, setFinalFormData] = useState({})
     const { id } = useParams();
     const navigate = useNavigate()
-    console.log(id)
     const [isDisabled, setIsDisabled] = useState(false)
 
 
@@ -192,7 +191,6 @@ const AddElements = () => {
     const handleFormSubmit = async () => {
         const mappedQuestions = await Promise.all(
             formElements.map(async (element) => {
-                console.log(element)
                 const uploadedFileUrl = await handleFileUpload(element.uploadedFile);
                 return {
                     type: element.id,
@@ -203,7 +201,6 @@ const AddElements = () => {
         );
 
         const newData = { questions: mappedQuestions };
-        console.log(newData);
 
         try {
             const response = await axios.patch(`/AddQuestions/${id}`, newData);

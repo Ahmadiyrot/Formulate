@@ -48,7 +48,6 @@ const SettingsTab = () => {
 
   const handleSaveUsername = () => {
     if (validName) {
-      console.log("New username:", username);
       setIsEditingUsername(false);
       setOldUsername(username);
 
@@ -78,8 +77,6 @@ const SettingsTab = () => {
 
     setPasswordError("");
 
-    console.log("Old password:", oldPassword);
-    console.log("New password:", newPassword);
 
     toast.success("Password changed successfully!");
 
@@ -95,7 +92,6 @@ const SettingsTab = () => {
   const handleConfirmDelete = () => {
     setShowDeleteModal(false);
 
-    console.log("Account ID to delete:", auth.userInfo._id);
 
     toast.success("Account deleted successfully!");
 

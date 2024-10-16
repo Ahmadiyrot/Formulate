@@ -42,8 +42,6 @@ const CreateForm = () => {
             }
         ).then(response => {
             const createdFormId = response.data.form._id;
-            console.log('Form created with ID:', createdFormId);
-
             navigate(`/AddElements/${createdFormId}`);
         }).catch(error => {
             console.error("Error creating form:", error);

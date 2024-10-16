@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import axios from '../../api/axios';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import TextAreaAnswer from './answers/TextAreaAnswer.js';
 import RatingQAnswer from './answers/RatingQAnswer.js';
 import QWithMultipleAnswer from './answers/QWithMultipleAnswer.js';
@@ -14,13 +15,12 @@ const ViewForm = () => {
     const { ID } = useParams();
     const [formAnswer, setFormAnswer] = useState(null);
     const [error, setError] = useState(null);
-
+    const formattedDate = formAnswer?.createdAt ? format(new Date(formAnswer.createdAt), 'P') : 'Date not available';
     useEffect(() => {
         const fetchFormAnswer = async () => {
             try {
                 const response = await axios.get(`/Answer/${ID}`);
                 setFormAnswer(response.data);
-                console.log(response.data);
             } catch (err) {
                 console.error('Error fetching form answer:', err);
                 setError(err.message);
@@ -33,15 +33,39 @@ const ViewForm = () => {
     }, [ID]);
 
     return (
-        <div className="container-fluid w-50 d-flex justify-content-center rounded-3 flex-column text-white">
-            <h1 className='text-center'>Form Answer Details</h1>
-            <p className='text-center'><strong>Answered By:</strong> {formAnswer.AnsweredBy.email}</p>
-            <p className='text-center'><strong>Status:</strong> {formAnswer.status}</p>
+        <div className="container-fluid w-50 d-flex justify-content-center align-items-center flex-column rounded-3 text-black p-3" style={{ backgroundColor: "#C0C0C0" }}>
+            <div className="row w-100">
+                <h3 className="text-center w-100">Form Details</h3>
+            </div>
+            <div className="row w-100 bg-white rounded-3 p-3">
+                <div className="col">
+                    <h2 className="ps-2 pb-2">{formAnswer?.formId?.formName}</h2>
+                    <p className="ps-2">
+                        <strong>Answered By: {formAnswer?.AnsweredBy?.email}</strong>
+                    </p>
+                    <div className="d-flex justify-content-start ps-2">
+                        <span className="me-4 align-content-center" style={{ fontWeight: "bolder" }}>Status:</span>
+                        <div
+                            className="d-flex justify-content-center rounded-2"
+                            style={{
+                                backgroundColor: formAnswer?.status === 'Paused' ? '#FCEB9F' : '#D9F9E6',
+                                color: formAnswer?.status === 'Paused' ? '#C8811A' : '#2F9461',
+                                width: '65px',
+                                padding: '5px',
+                            }}
+                        >
+                            <span>{formAnswer?.status}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col">
+                    <p className="ps-2 text-end"><strong>Date Answered:</strong> {formattedDate}</p>
+                </div>
+            </div>
 
 
-
-
-            {formAnswer.answers.map((answer, index) => {
+            {formAnswer?.answers.map((answer, index) => {
                 const idParts = answer.type.split('-');
                 const questionType = idParts[0];
 

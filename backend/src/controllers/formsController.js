@@ -153,7 +153,7 @@ const getDeletedByUserId = async (req, res) => {
 const getDraftsByUserId = async (req, res) => {
     const { id } = req.params;
     const { skip, limit } = req.query;
-    
+
     try {
         const total = await Form.countDocuments({
             formOwnerId: id,
@@ -174,6 +174,25 @@ const getDraftsByUserId = async (req, res) => {
     }
 };
 
+const changePinStatus = async (req, res) => {
+    const { id } = req.params;
+    const { pinned } = req.body;  
+
+    try {
+        const form = await Form.findById(id);
+        if (!form) {
+            return res.status(404).json({ message: 'Form not found' });
+        }
+
+        form.pinned = pinned; 
+
+        const updatedForm = await form.save(); 
+        return res.status(200).json({ message: 'Pin status updated', form: updatedForm });
+    } catch (error) {
+        console.error('Error updating pin status:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 
 
@@ -186,5 +205,6 @@ export default {
     deleteFormById,
     changeFormStatus,
     getDeletedByUserId,
-    getDraftsByUserId
+    getDraftsByUserId,
+    changePinStatus
 }

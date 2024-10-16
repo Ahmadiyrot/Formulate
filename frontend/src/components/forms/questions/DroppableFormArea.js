@@ -20,7 +20,6 @@ const DroppableFormArea = ({ formElements, handleRemoveElement, renderFormElemen
                     }}
                 >
                     {formElements.map((element, index) => {
-                        console.log('Rendering element:', element);
 
                         return (
                             <Draggable key={element.id} draggableId={element.id} index={index}>

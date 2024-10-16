@@ -19,8 +19,8 @@ const formAnswerSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["active", "paused"],
-        default: "active"
+        enum: ["Active", "Paused"],
+        default: "Active"
     },
     answers: {
         type: [Object],

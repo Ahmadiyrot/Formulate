@@ -20,7 +20,6 @@ const DeletedTab = () => {
             try {
                 const skip = (page - 1) * draftsPerPage;
                 const response = await axios.get(`/GetDeleted/${ownerId}?skip=${skip}&limit=${draftsPerPage}`);
-                console.log(response);
                 if (response.data.drafts) {
                     setDrafts(response.data.drafts);
                     setTotalPages(Math.ceil(response.data.total / draftsPerPage));

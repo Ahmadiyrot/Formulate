@@ -12,4 +12,6 @@ router.post("/isAnswered", formsAnswerController.isAnswered);
 
 router.get("/Answer/:answerId", formsAnswerController.getAnswerById);
 
+router.patch("/ChangeStatus/:id", formsAnswerController.chnageAnswerStatus);
+
 export default router

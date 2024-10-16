@@ -39,7 +39,7 @@ const TabsPage = () => {
             </div>
 
             <div className="row">
-                <div className="col-2">
+                <div className="col-1">
                     <ul className="nav flex-column nav-pills custom-nav">
                         <li className="nav-item">
                             <a
@@ -84,7 +84,7 @@ const TabsPage = () => {
                     </ul>
                 </div>
 
-                <div className="col-10">
+                <div className="col-11">
                     <div className=" mt-3">
                         <div className="tab-pane fade show active">{renderTabContent()}</div>
                     </div>

@@ -4,7 +4,7 @@ import Form from "./Form";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
-
+import FilterCard from "../responses/FilterCard";
 const FormsPage = () => {
     const { auth } = useAuth();
     const ownerId = auth.userInfo._id;
@@ -22,7 +22,6 @@ const FormsPage = () => {
             try {
                 const skip = (page - 1) * formsPerPage;
                 const response = await axios.get(`/forms/${ownerId}?skip=${skip}&limit=${formsPerPage}`);
-                console.log(response)
                 if (response.data.forms) {
                     setForms(response.data.forms);
                     setTotalPages(Math.ceil(response.data.total / formsPerPage));
@@ -36,7 +35,6 @@ const FormsPage = () => {
                 setLoading(false);
             }
         };
-
         fetchForms();
     }, [page, ownerId]);
 
@@ -51,7 +49,7 @@ const FormsPage = () => {
         <div className="container-fluid">
             <div className="row">
 
-                <div className="col-9">
+                <div className="col-10">
                     <div className="row d-flex justify-content-center">
                         <button className="create-form-button" onClick={() => navigate('/createform')}>
                             Create Form
@@ -99,8 +97,8 @@ const FormsPage = () => {
                         </div>
                     )}
                 </div>
-                <div className="col-3">
-                    <div className="p-3 border bg-light">Small Column</div>
+                <div className="col-2">
+                    <FilterCard />
                 </div>
             </div>
         </div>

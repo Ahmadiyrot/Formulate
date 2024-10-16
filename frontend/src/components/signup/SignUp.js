@@ -89,16 +89,13 @@ const Register = () => {
                 country: selectedCountry,
             });
 
-            console.log(response)
             if (response.user && response.token) {
                 toast.success("Account created");
                 navigate('/login');
             } else {
                 if (response.status === 401) {
-                    console.log("username is already taken")
                 }
                 if (response.status === 402) {
-                    console("email already in use")
                 }
             }
         } catch (err) {

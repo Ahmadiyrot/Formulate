@@ -13,9 +13,6 @@ const createFormAnswer = async (req, res) => {
 
 const deleteFormAnswer = async (req, res) => {
     const { formId, formOwnerId } = req.query;
-
-    console.log("Form ID:", formId, "Owner ID:", formOwnerId);
-
     try {
 
         const form = await FormAnswer.findOne({ _id: formId });
@@ -46,7 +43,8 @@ const getFormAnswers = async (req, res) => {
 
     try {
         const formAnswers = await FormAnswer.find({ formId: formId })
-            .populate('AnsweredBy', 'email');
+            .populate('AnsweredBy', 'email')
+            .populate('formId', 'formName');
 
         if (formAnswers.length === 0) {
             return res.status(404).send({ error: "No form answers found or you are not authorized to view them" });
@@ -60,7 +58,6 @@ const getFormAnswers = async (req, res) => {
 
 const isAnswered = async (req, res) => {
     const { formId, AnsweredById } = req.body;
-    console.log(req.body)
 
     try {
         const response = await FormAnswer.findOne({ formId: formId, answeredBy: AnsweredById });
@@ -84,7 +81,9 @@ const getAnswerById = async (req, res) => {
     }
 
     try {
-        const formAnswer = await FormAnswer.findById(answerId).populate('AnsweredBy', 'email');
+        const formAnswer = await FormAnswer.findById(answerId)
+            .populate('AnsweredBy', 'email')
+            .populate('formId', 'formName');
 
         if (!formAnswer) {
             return res.status(404).send({ error: "Form answer not found" });
@@ -97,6 +96,38 @@ const getAnswerById = async (req, res) => {
     }
 };
 
+const chnageAnswerStatus = async (req, res) => {
+    const { id } = req.params; // Extract the answer ID from the route parameters
+    const { status } = req.body; // Get the new status from the request body
+
+    // Validate the answer ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Invalid answer ID" });
+    }
+
+    try {
+        // Find the form answer by ID
+        const formAnswer = await FormAnswer.findById(id);
+
+        // If the form answer doesn't exist, return a 404 error
+        if (!formAnswer) {
+            return res.status(404).send({ error: "Form answer not found" });
+        }
+
+        // Update the status of the form answer
+        formAnswer.status = status;
+
+        // Save the updated form answer
+        await formAnswer.save();
+
+        // Send a success response with the updated form answer
+        res.status(200).send({ message: "Status updated successfully", formAnswer });
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).send({ error: "Internal server error" });
+    }
+};
+
 
 
 export default {
@@ -104,5 +135,37 @@ export default {
     deleteFormAnswer,
     getFormAnswers,
     isAnswered,
-    getAnswerById
+    getAnswerById,
+    chnageAnswerStatus
 }
+
+// const getFormAnswers = async (req, res) => {
+//     const { formId } = req.params;
+//     const { status } = req.query; // Get status from the query string
+
+//     if (!mongoose.Types.ObjectId.isValid(formId)) {
+//         return res.status(400).send({ error: "Invalid form ID" });
+//     }
+
+//     try {
+//         // Build the query object
+//         const query = { formId: formId };
+
+//         // If status is provided, add it to the query object
+//         if (status) {
+//             query.status = status;
+//         }
+
+//         const formAnswers = await FormAnswer.find(query)
+//             .populate('AnsweredBy', 'email')
+//             .populate('formId', 'formName');
+
+//         if (formAnswers.length === 0) {
+//             return res.status(404).send({ error: "No form answers found or you are not authorized to view them" });
+//         }
+
+//         res.status(200).send(formAnswers);
+//     } catch (error) {
+//         res.status(500).send({ error: error.message });
+//     }
+// };
