@@ -36,25 +36,43 @@ const deleteFormAnswer = async (req, res) => {
 
 const getFormAnswers = async (req, res) => {
     const { formId } = req.params;
+    const { status, limit = 10, page = 1 } = req.query; 
+    console.log(status, formId);
 
     if (!mongoose.Types.ObjectId.isValid(formId)) {
         return res.status(400).send({ error: "Invalid form ID" });
     }
 
     try {
-        const formAnswers = await FormAnswer.find({ formId: formId })
+        const query = { formId: formId };
+        if (status) {
+            query.status = status;
+        }
+
+        const skip = (page - 1) * limit;
+
+        const formAnswers = await FormAnswer.find(query)
             .populate('AnsweredBy', 'email')
-            .populate('formId', 'formName');
+            .populate('formId', 'formName')
+            .skip(skip) 
+            .limit(parseInt(limit));
+
+        const totalAnswers = await FormAnswer.countDocuments(query);
 
         if (formAnswers.length === 0) {
             return res.status(404).send({ error: "No form answers found or you are not authorized to view them" });
         }
 
-        res.status(200).send(formAnswers);
+        res.status(200).send({
+            responses: formAnswers,
+            total: totalAnswers, 
+        });
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
 };
+
+
 
 const isAnswered = async (req, res) => {
     const { formId, AnsweredById } = req.body;
@@ -97,30 +115,24 @@ const getAnswerById = async (req, res) => {
 };
 
 const chnageAnswerStatus = async (req, res) => {
-    const { id } = req.params; // Extract the answer ID from the route parameters
-    const { status } = req.body; // Get the new status from the request body
+    const { id } = req.params;
+    const { status } = req.body;
 
-    // Validate the answer ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send({ error: "Invalid answer ID" });
     }
 
     try {
-        // Find the form answer by ID
         const formAnswer = await FormAnswer.findById(id);
 
-        // If the form answer doesn't exist, return a 404 error
         if (!formAnswer) {
             return res.status(404).send({ error: "Form answer not found" });
         }
 
-        // Update the status of the form answer
         formAnswer.status = status;
 
-        // Save the updated form answer
         await formAnswer.save();
 
-        // Send a success response with the updated form answer
         res.status(200).send({ message: "Status updated successfully", formAnswer });
     } catch (error) {
         console.error('Error updating status:', error);

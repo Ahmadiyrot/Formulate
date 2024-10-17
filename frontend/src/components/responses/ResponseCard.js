@@ -22,7 +22,6 @@ const ResponseCard = (props) => {
                 }
             });
             toast.success('Deleted successfully');
-            // Optionally, you can remove the card from the UI or refresh the list
         } catch (error) {
             console.error('Error deleting:', error);
             toast.error('Failed to delete');
@@ -34,7 +33,6 @@ const ResponseCard = (props) => {
             .then(response => {
                 toast.success('Status updated successfully');
                 setShowModal(false);
-                // Optionally, update the status in the UI without reloading
             })
             .catch(error => {
                 console.error('Error updating status:', error);
@@ -54,7 +52,6 @@ const ResponseCard = (props) => {
                 style={{ border: "1px solid #E9EFF4" }}>
                 <div className="row align-items-center justify-content-center">
 
-                    {/* Status Badge */}
                     <div className="col-12 col-sm-6 col-md-2 mb-2 mb-md-0 d-flex justify-content-center align-items-center p-2"
                         style={{ backgroundColor: props.color, color: props.color2, borderRadius: '8px', width: '65px' }}>
                         <OverlayTrigger
@@ -66,7 +63,6 @@ const ResponseCard = (props) => {
                         </OverlayTrigger>
                     </div>
 
-                    {/* Email */}
                     <div className="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 text-center text-md-left">
                         <OverlayTrigger
                             placement="top"
@@ -77,7 +73,6 @@ const ResponseCard = (props) => {
                         </OverlayTrigger>
                     </div>
 
-                    {/* ID */}
                     <div className="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 text-center text-md-left">
                         <OverlayTrigger
                             placement="top"
@@ -88,7 +83,6 @@ const ResponseCard = (props) => {
                         </OverlayTrigger>
                     </div>
 
-                    {/* Date */}
                     <div className="col-12 col-sm-6 col-md-2 mb-2 mb-md-0 text-center text-md-left">
                         <OverlayTrigger
                             placement="top"
@@ -99,7 +93,6 @@ const ResponseCard = (props) => {
                         </OverlayTrigger>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-around p-1">
                         <OverlayTrigger
                             placement="top"
@@ -132,7 +125,6 @@ const ResponseCard = (props) => {
                 </div>
             </div>
 
-            {/* Edit Status Modal */}
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Status</Modal.Title>

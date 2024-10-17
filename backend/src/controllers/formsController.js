@@ -44,29 +44,54 @@ const addQuestionsToForm = async (req, res) => { // this will add qustions to th
     }
 };
 
-const getFormsByOwnerId = async (req, res) => { // this will return forms that are not empty (empty means no qustons inside the form) or have "disabled" status
+const getFormsByOwnerId = async (req, res) => {
     const { ownerId } = req.params;
-    const { skip, limit } = req.query;
+    const { skip = 0, limit = 10, search, date, pinned } = req.query;
+
+    let filter = {
+        formOwnerId: ownerId,
+        status: { $in: ['Active', 'Paused'] },
+        questions: { $ne: [] }
+    };
+
+    if (search) {
+        console.log("Entered search filter");
+        filter.formName = { $regex: search, $options: 'i' };
+    }
+
+    if (date) {
+        console.log("Entered date filter");
+        const [month, day, year] = date.split('/');
+        const parsedDate = new Date(`${year}-${month}-${day}`);
+        const nextDay = new Date(parsedDate);
+        nextDay.setDate(parsedDate.getDate() + 1);
+        filter.createdAt = {
+            $gte: parsedDate,
+            $lt: nextDay,
+        };
+    }
+
+    if (pinned !== undefined) {
+        console.log("Entered pinned filter");
+        filter.pinned = pinned === 'true';
+    }
 
     try {
-        const total = await Form.countDocuments({
-            formOwnerId: ownerId,
-            status: { $in: ['Active', 'Paused'] },
-            questions: { $ne: [] }
-        });
-        const forms = await Form.find({
-            formOwnerId: ownerId,
-            status: { $in: ['Active', 'Paused'] },
-            questions: { $ne: [] }
-        })
-            .skip(parseInt(skip))
-            .limit(parseInt(limit));
+        const total = await Form.countDocuments(filter);
 
-        res.status(200).send({ forms, total });
+        const forms = await Form.find(filter)
+            .skip(parseInt(skip))
+            .limit(parseInt(limit))
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ forms, total });
     } catch (error) {
-        res.status(400).send({ error: 'Error fetching forms', details: error });
+        console.error('Error fetching forms:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+
 
 
 const getFormById = async (req, res) => { // this will get the form by the object id 
@@ -176,7 +201,7 @@ const getDraftsByUserId = async (req, res) => {
 
 const changePinStatus = async (req, res) => {
     const { id } = req.params;
-    const { pinned } = req.body;  
+    const { pinned } = req.body;
 
     try {
         const form = await Form.findById(id);
@@ -184,9 +209,9 @@ const changePinStatus = async (req, res) => {
             return res.status(404).json({ message: 'Form not found' });
         }
 
-        form.pinned = pinned; 
+        form.pinned = pinned;
 
-        const updatedForm = await form.save(); 
+        const updatedForm = await form.save();
         return res.status(200).json({ message: 'Pin status updated', form: updatedForm });
     } catch (error) {
         console.error('Error updating pin status:', error);

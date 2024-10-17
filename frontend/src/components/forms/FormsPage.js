@@ -5,6 +5,9 @@ import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import FilterCard from "../responses/FilterCard";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 const FormsPage = () => {
     const { auth } = useAuth();
     const ownerId = auth.userInfo._id;
@@ -16,39 +19,73 @@ const FormsPage = () => {
     const formsPerPage = 9;
     const navigate = useNavigate();
 
+    const [filterData, setFilterData] = useState({
+        SearchQuery: null,
+        Date: null,
+        Status: null,
+        Pinned: null,
+    });
+
+    const handleFilterApply = (newFilterData) => {
+        setFilterData(newFilterData);
+        setPage(1);
+    };
+
     useEffect(() => {
         const fetchForms = async () => {
             setLoading(true);
             try {
                 const skip = (page - 1) * formsPerPage;
-                const response = await axios.get(`/forms/${ownerId}?skip=${skip}&limit=${formsPerPage}`);
+
+                const params = {
+                    skip,
+                    limit: formsPerPage,
+                };
+
+                if (filterData.SearchQuery) {
+                    params.search = filterData.SearchQuery;
+                }
+
+                if (filterData.Date) {
+                    params.date = filterData.Date;
+                }
+
+                if (filterData.Status) {
+                    params.status = filterData.Status;
+                }
+
+                if (filterData.Pinned) {
+                    params.pinned = filterData.Pinned;
+                }
+                const response = await axios.get(`/forms/${ownerId}`, { params });
+
                 if (response.data.forms) {
                     setForms(response.data.forms);
                     setTotalPages(Math.ceil(response.data.total / formsPerPage));
                 } else {
                     setForms([]);
+                    setTotalPages(1);
                 }
             } catch (err) {
-                setError(err.message);
+                setError(err.response?.data?.message || err.message);
                 setForms([]);
+                setTotalPages(1);
             } finally {
                 setLoading(false);
             }
         };
         fetchForms();
-    }, [page, ownerId]);
+    }, [page, ownerId, filterData]);
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
 
-    if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
         <div className="container-fluid">
             <div className="row">
-
                 <div className="col-10">
                     <div className="row d-flex justify-content-center">
                         <button className="create-form-button" onClick={() => navigate('/createform')}>
@@ -60,7 +97,32 @@ const FormsPage = () => {
                     </div>
 
                     <div className="d-flex flex-wrap justify-content-center">
-                        {forms.length > 0 ? (
+                        {loading ? (
+
+                            Array.from({ length: formsPerPage }).map((_, index) => (
+                                <div key={index} style={{ width: "300px", margin: "10px" }}>
+                                    <div className="bg-white container p-3" style={{ maxWidth: "400px", borderRadius: "15px" }}>
+                                        <div className="row d-flex justify-content-between align-items-center p-1 mb-2">
+                                            <Skeleton width={150} height={20} />
+                                            <div className="text-end"><Skeleton width={50} height={50} /></div>
+                                        </div>
+
+                                        <div className="row d-flex justify-content-center p-1 mb-2">
+                                            <Skeleton width={200} height={15} />
+                                        </div>
+
+                                        <div className="row">
+                                            <div className="col-8 d-flex align-items-center">
+                                                <Skeleton height={40} width={120} />
+                                            </div>
+                                            <div className="col-4 d-flex align-items-center justify-content-end">
+                                                <Skeleton height={30} width={50} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : forms.length > 0 ? (
                             forms.map((form) => (
                                 <div key={form._id} style={{ width: "300px", margin: "10px" }}>
                                     <Form
@@ -98,7 +160,7 @@ const FormsPage = () => {
                     )}
                 </div>
                 <div className="col-2">
-                    <FilterCard />
+                    <FilterCard onApply={handleFilterApply} />
                 </div>
             </div>
         </div>
