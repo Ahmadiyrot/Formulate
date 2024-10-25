@@ -13,7 +13,7 @@ const DraftTab = () => {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const draftsPerPage = 9;
+    const draftsPerPage = 15;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -50,7 +50,7 @@ const DraftTab = () => {
         <div className="container-fluid">
             <div className="row">
 
-                <div className="col-9">
+                <div className="col-12">
                     <div className="row d-flex justify-content-center">
                         <button className="create-form-button" onClick={() => navigate('/createform')}>
                             Create Draft
@@ -98,9 +98,6 @@ const DraftTab = () => {
                             />
                         </div>
                     )}
-                </div>
-                <div className="col-3">
-                    <div className="p-3 border bg-light">Small Column</div>
                 </div>
             </div>
         </div>

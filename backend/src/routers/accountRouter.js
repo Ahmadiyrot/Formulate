@@ -8,4 +8,5 @@ router.post('/signIn', accountController.signInAccount);
 
 router.get("/refresh", accountController.refreshAccount);
 
+router.post("/send-verification-code", accountController.sendVerificationCode);
 export default router

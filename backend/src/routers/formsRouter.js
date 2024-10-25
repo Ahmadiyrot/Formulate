@@ -20,5 +20,6 @@ router.get("/GetDrafts/:id", formsController.getDraftsByUserId)
 
 router.patch("/ChangePinStatus/:id", formsController.changePinStatus);
 
+router.patch("/RetrieveForm/:id", formsController.retrieveFormById);
 
 export default router

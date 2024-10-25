@@ -33,7 +33,6 @@ const Responses = () => {
                     params.status = selectedStatus;
                 }
                 const res = await axios.get(`/responses/${id}`, { params });
-                console.log(res.data);
                 setResponses(res.data.responses);
                 setTotalPages(Math.ceil(res.data.total / responsesPerPage));
             } catch (err) {
@@ -58,11 +57,11 @@ const Responses = () => {
     if (loading) {
         return (
             <div className="container-fluid col-8 pt-5">
-                <Skeleton height={40} width={300} /> 
+                <Skeleton height={40} width={300} />
 
                 <div className="row justify-content-between align-items-center mt-3 mb-4">
                     <div className="col-auto">
-                        <Skeleton width={120} height={30} /> 
+                        <Skeleton width={120} height={30} />
                     </div>
                 </div>
 
@@ -74,7 +73,7 @@ const Responses = () => {
 
                                 <div className="col-12 col-sm-6 col-md-2 mb-2 mb-md-0 d-flex justify-content-center align-items-center p-2"
                                     style={{ borderRadius: '8px', width: '65px' }}>
-                                    <Skeleton height={25} width={50} /> 
+                                    <Skeleton height={25} width={50} />
                                 </div>
 
                                 <div className="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 text-center text-md-left">
@@ -82,17 +81,17 @@ const Responses = () => {
                                 </div>
 
                                 <div className="col-12 col-sm-6 col-md-3 mb-2 mb-md-0 text-center text-md-left">
-                                    <Skeleton height={25} width={'100%'} /> 
+                                    <Skeleton height={25} width={'100%'} />
                                 </div>
 
                                 <div className="col-12 col-sm-6 col-md-2 mb-2 mb-md-0 text-center text-md-left">
-                                    <Skeleton height={25} width={'100%'} /> 
+                                    <Skeleton height={25} width={'100%'} />
                                 </div>
 
                                 <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-around p-1">
-                                    <Skeleton circle={true} height={40} width={40} /> 
-                                    <Skeleton circle={true} height={40} width={40} /> 
-                                    <Skeleton circle={true} height={40} width={40} /> 
+                                    <Skeleton circle={true} height={40} width={40} />
+                                    <Skeleton circle={true} height={40} width={40} />
+                                    <Skeleton circle={true} height={40} width={40} />
                                 </div>
                             </div>
                         </div>

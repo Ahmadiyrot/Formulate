@@ -57,7 +57,9 @@ const Login = () => {
             setCookie('jwt', accessToken, { path: '/', maxAge: 86400, secure: true })
             setUser('');
             setPwd('');
+
             navigate(from, { replace: true });
+            window.location.reload()
 
         } catch (error) {
             if (!error.response) {

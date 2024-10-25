@@ -30,8 +30,10 @@ const AnswerForm = () => {
             if (response.data.answered) {
                 return 1;
             } else {
-                toast.success('hello')
                 const response = await axios.get(`/AnswerForm/${id}`);
+                if (auth.userInfo._id === response.data.form.formOwnerId) {
+                    navigate('/error', { state: { id: 405 } });
+                }
                 return response.data
             }
         } catch (error) {
@@ -311,6 +313,7 @@ const AnswerForm = () => {
         try {
             const response = await axios.post('/Answer', submissionData);
             toast.success('Answer saved')
+            navigate('/tabspage')
         } catch (error) {
             toast.error("Error subitting form:", error.status)
             console.error("Error submitting form:", error);

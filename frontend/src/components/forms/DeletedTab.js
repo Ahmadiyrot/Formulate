@@ -12,7 +12,7 @@ const DeletedTab = () => {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const draftsPerPage = 9;
+    const draftsPerPage = 15;
 
     useEffect(() => {
         const fetchDrafts = async () => {
@@ -48,7 +48,7 @@ const DeletedTab = () => {
         <div className="container-fluid">
             <div className="row">
 
-                <div className="col-9">
+                <div className="col-12">
                     <div className="d-flex flex-wrap justify-content-center">
                         {drafts.length > 0 ? (
                             drafts.map((form) => (
@@ -85,9 +85,7 @@ const DeletedTab = () => {
                     )}
                 </div>
 
-                <div className="col-3">
-                    <div className="p-3 border bg-light">Small Column</div>
-                </div>
+                
             </div>
         </div>
     );

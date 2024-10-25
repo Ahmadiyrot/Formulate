@@ -55,12 +55,10 @@ const getFormsByOwnerId = async (req, res) => {
     };
 
     if (search) {
-        console.log("Entered search filter");
         filter.formName = { $regex: search, $options: 'i' };
     }
 
     if (date) {
-        console.log("Entered date filter");
         const [month, day, year] = date.split('/');
         const parsedDate = new Date(`${year}-${month}-${day}`);
         const nextDay = new Date(parsedDate);
@@ -72,7 +70,6 @@ const getFormsByOwnerId = async (req, res) => {
     }
 
     if (pinned !== undefined) {
-        console.log("Entered pinned filter");
         filter.pinned = pinned === 'true';
     }
 
@@ -219,6 +216,29 @@ const changePinStatus = async (req, res) => {
     }
 };
 
+const retrieveFormById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const form = await Form.findById(id);
+        if (!form) {
+            return res.status(404).json({ message: 'Form not found' });
+        }
+
+        if (form.status !== 'Disabled') {
+            return res.status(400).json({ message: 'Form is not disabled, cannot be retrieved.' });
+        }
+
+        form.status = 'Active';
+
+        await form.save();
+
+        return res.status(200).json({ message: 'Form retrieved successfully and status changed to Active', form });
+    } catch (error) {
+        console.error('Error retrieving form:', error);
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
 
 
 
@@ -231,5 +251,6 @@ export default {
     changeFormStatus,
     getDeletedByUserId,
     getDraftsByUserId,
-    changePinStatus
+    changePinStatus,
+    retrieveFormById
 }

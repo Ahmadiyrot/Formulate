@@ -36,8 +36,7 @@ const deleteFormAnswer = async (req, res) => {
 
 const getFormAnswers = async (req, res) => {
     const { formId } = req.params;
-    const { status, limit = 10, page = 1 } = req.query; 
-    console.log(status, formId);
+    const { status, limit = 10, page = 1 } = req.query;
 
     if (!mongoose.Types.ObjectId.isValid(formId)) {
         return res.status(400).send({ error: "Invalid form ID" });
@@ -54,7 +53,7 @@ const getFormAnswers = async (req, res) => {
         const formAnswers = await FormAnswer.find(query)
             .populate('AnsweredBy', 'email')
             .populate('formId', 'formName')
-            .skip(skip) 
+            .skip(skip)
             .limit(parseInt(limit));
 
         const totalAnswers = await FormAnswer.countDocuments(query);
@@ -65,7 +64,7 @@ const getFormAnswers = async (req, res) => {
 
         res.status(200).send({
             responses: formAnswers,
-            total: totalAnswers, 
+            total: totalAnswers,
         });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -150,34 +149,3 @@ export default {
     getAnswerById,
     chnageAnswerStatus
 }
-
-// const getFormAnswers = async (req, res) => {
-//     const { formId } = req.params;
-//     const { status } = req.query; // Get status from the query string
-
-//     if (!mongoose.Types.ObjectId.isValid(formId)) {
-//         return res.status(400).send({ error: "Invalid form ID" });
-//     }
-
-//     try {
-//         // Build the query object
-//         const query = { formId: formId };
-
-//         // If status is provided, add it to the query object
-//         if (status) {
-//             query.status = status;
-//         }
-
-//         const formAnswers = await FormAnswer.find(query)
-//             .populate('AnsweredBy', 'email')
-//             .populate('formId', 'formName');
-
-//         if (formAnswers.length === 0) {
-//             return res.status(404).send({ error: "No form answers found or you are not authorized to view them" });
-//         }
-
-//         res.status(200).send(formAnswers);
-//     } catch (error) {
-//         res.status(500).send({ error: error.message });
-//     }
-// };
