@@ -9,18 +9,22 @@ import QWithImgAnswer from './answers/QWithImgAnswer.js';
 import QWithAnswerImg from './answers/QWithAnswerImg.js';
 import QTrueOrFalseAnswer from './answers/QTrueOrFalseAnswer.js';
 import QWithColorPickerAnswer from './answers/QWithColorPickerAnswer.js';
-import QWithTextAndImgAnswer from './answers/QWithTextAndImgAnswer.js'
+import QWithTextAndImgAnswer from './answers/QWithTextAndImgAnswer.js';
+import PickAnswerView from './answers/PickAnswerView.js'; 
+import DropdownSelectView from './answers/DropdownSelectView.js'; 
 
 const ViewForm = () => {
     const { ID } = useParams();
     const [formAnswer, setFormAnswer] = useState(null);
     const [error, setError] = useState(null);
     const formattedDate = formAnswer?.createdAt ? format(new Date(formAnswer.createdAt), 'P') : 'Date not available';
+
     useEffect(() => {
         const fetchFormAnswer = async () => {
             try {
                 const response = await axios.get(`/Answer/${ID}`);
                 setFormAnswer(response.data);
+                console.log(response.data);
             } catch (err) {
                 console.error('Error fetching form answer:', err);
                 setError(err.message);
@@ -33,7 +37,10 @@ const ViewForm = () => {
     }, [ID]);
 
     return (
-        <div className="container-fluid w-50 d-flex justify-content-center align-items-center flex-column rounded-3 text-black p-3" style={{ backgroundColor: "#C0C0C0" }}>
+        <div
+            className="container-fluid w-50 d-flex justify-content-center align-items-center flex-column rounded-3 text-black p-3"
+            style={{ backgroundColor: '#C0C0C0' }}
+        >
             <div className="row w-100">
                 <h3 className="text-center w-100">Form Details</h3>
             </div>
@@ -44,7 +51,9 @@ const ViewForm = () => {
                         <strong>Answered By: {formAnswer?.AnsweredBy?.email}</strong>
                     </p>
                     <div className="d-flex justify-content-start ps-2">
-                        <span className="me-4 align-content-center" style={{ fontWeight: "bolder" }}>Status:</span>
+                        <span className="me-4 align-content-center" style={{ fontWeight: 'bolder' }}>
+                            Status:
+                        </span>
                         <div
                             className="d-flex justify-content-center rounded-2"
                             style={{
@@ -60,10 +69,11 @@ const ViewForm = () => {
                 </div>
 
                 <div className="col">
-                    <p className="ps-2 text-end"><strong>Date Answered:</strong> {formattedDate}</p>
+                    <p className="ps-2 text-end">
+                        <strong>Date Answered:</strong> {formattedDate}
+                    </p>
                 </div>
             </div>
-
 
             {formAnswer?.answers.map((answer, index) => {
                 const idParts = answer.type.split('-');
@@ -140,19 +150,32 @@ const ViewForm = () => {
                             key={index}
                             question={answer.question}
                             answer={answer.answer}
-                            setAnswer={() => { }}
+                            setAnswer={() => {}}
                             uploadedFileUrl={answer.uploadedFileUrl}
-                            setUploadedFileUrl={() => { }}
+                            setUploadedFileUrl={() => {}}
                             readOnly={true}
                         />
                     );
-                } else {
+                } else if (questionType === 'DropdownSelectQuestion') {
                     return (
-                        <p key={index}>Unsupported question type: {questionType}</p>
+                        <DropdownSelectView
+                            key={index}
+                            question={answer.question}
+                            selectedOption={answer.answer}
+                        />
                     );
+                } else if (questionType === 'PickAnswerQuestion') {
+                    return (
+                        <PickAnswerView
+                            key={index}
+                            question={answer.question}
+                            selectedOption={answer.answer}
+                        />
+                    );
+                } else {
+                    return <p key={index}>Unsupported question type: {questionType}</p>;
                 }
             })}
-
         </div>
     );
 };

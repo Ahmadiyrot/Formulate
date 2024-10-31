@@ -8,6 +8,8 @@ import QWithColorPicker from './QWithColorPicker.js';
 import QWithTextAndImgAns from './QWithTextAndImgAns.js';
 import QWithImgAnswer from './QWithImgAnswer.js';
 import QWithMultiAnswer from './QWithMultiAnswer.js';
+import PickAnswerQuestion from './PickAnswerQuestion.js';
+import DropdownSelectQuestion from './DropdownSelectQuestion.js';
 
 const DraggableLibrary = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +55,16 @@ const DraggableLibrary = () => {
             id: 'QWithMultiAnswer',
             name: 'Question with Multiple Answers',
             component: <QWithMultiAnswer inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'PickAnswerQuestion',
+            name: 'Pick an answer',
+            component: <PickAnswerQuestion inputValue="" setInputValue={() => { }} />,
+        },
+        {
+            id: 'DropdownSelectQuestion', 
+            name: 'Dropdown Select Question',
+            component: <DropdownSelectQuestion inputValue="" setInputValue={() => { }} options={['']} setOptions={() => { }} isPreview={true} />,
         },
     ];
 

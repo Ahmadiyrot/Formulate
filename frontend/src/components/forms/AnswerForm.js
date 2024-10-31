@@ -9,6 +9,8 @@ import QWithColorPickerAnswer from "./answers/QWithColorPickerAnswer.js";
 import QWithTextAndImgAnswer from './answers/QWithTextAndImgAnswer.js';
 import QWithAnswerImg from "./answers/QWithAnswerImg.js";
 import QWithMultipleAnswer from './answers/QWithMultipleAnswer.js';
+import DropdownSelectAnswer from './answers/DropdownSelectAnswer.js';
+import PickAnswerAnswer from './answers/PickAnswerAnswer.js'; 
 import useAuth from '../../hooks/useAuth.js';
 import { toast } from 'react-hot-toast';
 
@@ -17,8 +19,7 @@ const AnswerForm = () => {
     const [form, setForm] = useState(null);
     const [answers, setAnswers] = useState([]);
     const { auth } = useAuth();
-    const navigate = useNavigate()
-
+    const navigate = useNavigate();
 
     const checkIfAnswered = async (id) => {
         try {
@@ -34,7 +35,7 @@ const AnswerForm = () => {
                 if (auth.userInfo._id === response.data.form.formOwnerId) {
                     navigate('/error', { state: { id: 405 } });
                 }
-                return response.data
+                return response.data;
             }
         } catch (error) {
             console.error('Error checking if form is answered:', error);
@@ -53,7 +54,7 @@ const AnswerForm = () => {
             } else {
                 setForm(data.form);
             }
-            const initialAnswers = data.form.questions.map(question => {
+            const initialAnswers = data.form.questions.map((question) => {
                 const baseAnswer = {
                     question: question.inputValue,
                     type: question.type,
@@ -102,7 +103,18 @@ const AnswerForm = () => {
                             ...baseAnswer,
                             answers: [''],
                         };
-
+                    case 'DropdownSelectQuestion':
+                        return {
+                            ...baseAnswer,
+                            selectedOption: '',
+                            options: question.options || [],
+                        };
+                    case 'PickAnswerQuestion':
+                        return {
+                            ...baseAnswer,
+                            selectedOption: '',
+                            answers: question.answers || [],
+                        };
                     default:
                         return {
                             ...baseAnswer,
@@ -118,7 +130,7 @@ const AnswerForm = () => {
     }, [id]);
 
     const handleInputChange = (index, newValue) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -129,7 +141,7 @@ const AnswerForm = () => {
     };
 
     const handleRatingChange = (index, newRating) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -140,7 +152,7 @@ const AnswerForm = () => {
     };
 
     const handleOptionChange = (index, newOption) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -151,7 +163,7 @@ const AnswerForm = () => {
     };
 
     const handleColorsChange = (index, newColors) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -162,7 +174,7 @@ const AnswerForm = () => {
     };
 
     const handleFileUrlChange = (index, newFileUrl) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -173,7 +185,7 @@ const AnswerForm = () => {
     };
 
     const handleMultipleAnswersChange = (index, newAnswers) => {
-        setAnswers(prevAnswers => {
+        setAnswers((prevAnswers) => {
             const updatedAnswers = [...prevAnswers];
             updatedAnswers[index] = {
                 ...updatedAnswers[index],
@@ -260,6 +272,27 @@ const AnswerForm = () => {
                         setAnswers={(newAnswers) => handleMultipleAnswersChange(index, newAnswers)}
                     />
                 );
+            case 'DropdownSelectQuestion':
+                return (
+                    <DropdownSelectAnswer
+                        key={index}
+                        question={question.inputValue}
+                        options={question.options || []}
+                        selectedOption={answers[index]?.selectedOption || ''}
+                        onOptionChange={(newOption) => handleOptionChange(index, newOption)}
+                    />
+                );
+                case 'PickAnswerQuestion':
+                    return (
+                        <PickAnswerAnswer
+                            key={index}
+                            question={question.inputValue}
+                            answers={question.answers || []}
+                            selectedOption={answers[index]?.selectedOption || ''}
+                            onOptionChange={(newOption) => handleOptionChange(index, newOption)}
+                            questionIndex={index}
+                        />
+                    );
             default:
                 return null;
         }
@@ -299,23 +332,33 @@ const AnswerForm = () => {
                     response.answer = answer.answer || '';
                     response.uploadedFileUrl = answer.uploadedFileUrl || '';
                 }
-                if (type.startsWith('QWithImg')) {
+
+                if (type.startsWith('QWithImgAnswer')) {
                     response.uploadedFileUrl = answer.uploadedFileUrl || '';
                 }
+
                 if (type.startsWith('QWithMultiAnswer')) {
                     response.answers = answer.answers || [];
                 }
+
+                if (type.startsWith('DropdownSelectQuestion')) {
+                    response.answer = answer.selectedOption || '';
+                }
+
+                if (type.startsWith('PickAnswerQuestion')) { 
+                    response.answer = answer.selectedOption || '';
+                }
+
                 return response;
             }),
         };
 
-
         try {
-            const response = await axios.post('/Answer', submissionData);
-            toast.success('Answer saved')
-            navigate('/tabspage')
+            await axios.post('/Answer', submissionData);
+            toast.success('Answer saved');
+            navigate('/tabspage');
         } catch (error) {
-            toast.error("Error subitting form:", error.status)
+            toast.error("Error submitting form:", error.status);
             console.error("Error submitting form:", error);
         }
     };

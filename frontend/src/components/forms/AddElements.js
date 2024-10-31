@@ -15,12 +15,14 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { storage } from '../../firebaseConfig.js';
 import { ref, uploadBytes } from 'firebase/storage';
-import { getDownloadURL } from "firebase/storage";
+import { getDownloadURL } from 'firebase/storage';
 import axios from '../../api/axios.js';
 import { toast } from 'react-hot-toast';
-import './Forms.css'
+import './Forms.css';
+import DropdownSelectQuestion from './questions/DropdownSelectQuestion.js';
 
 import { Modal, Button, Form } from 'react-bootstrap';
+import PickAnswerQuestion from './questions/PickAnswerQuestion.js';
 
 const AddElements = () => {
     const [formElements, setFormElements] = useState([]);
@@ -42,7 +44,10 @@ const AddElements = () => {
         if (!destination) {
             return;
         }
-        if (source.droppableId === destination.droppableId && destination.droppableId === 'droppable-area') {
+        if (
+            source.droppableId === destination.droppableId &&
+            destination.droppableId === 'droppable-area'
+        ) {
             const reorderedElements = Array.from(formElements);
             const [movedElement] = reorderedElements.splice(source.index, 1);
             reorderedElements.splice(destination.index, 0, movedElement);
@@ -50,51 +55,109 @@ const AddElements = () => {
         } else if (destination.droppableId === 'droppable-area') {
             const draggableId = result.draggableId;
             if (draggableId === 'TextAreaQ') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `TextAreaQ-${Date.now()}`, type: 'TextAreaQ', inputValue: '' }
+                    { id: `TextAreaQ-${Date.now()}`, type: 'TextAreaQ', inputValue: '' },
                 ]);
             } else if (draggableId === 'RatingQ') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `RatingQ-${Date.now()}`, type: 'RatingQ', inputValue: '' }
+                    { id: `RatingQ-${Date.now()}`, type: 'RatingQ', inputValue: '' },
                 ]);
             } else if (draggableId === 'QWithImg') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QWithImg-${Date.now()}`, type: 'QWithImg', inputValue: '', uploadedFile: null }
+                    {
+                        id: `QWithImg-${Date.now()}`,
+                        type: 'QWithImg',
+                        inputValue: '',
+                        uploadedFile: null,
+                    },
                 ]);
             } else if (draggableId === 'QTrueOrFalse') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QTrueOrFalse-${Date.now()}`, type: 'QTrueOrFalse', inputValue: '', uploadedFile: null }
+                    { id: `QTrueOrFalse-${Date.now()}`, type: 'QTrueOrFalse', inputValue: '' },
                 ]);
             } else if (draggableId === 'QWithColorPicker') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QWithColorPicker-${Date.now()}`, type: 'QWithColorPicker', inputValue: '', uploadedFile: null }
+                    { id: `QWithColorPicker-${Date.now()}`, type: 'QWithColorPicker', inputValue: '' },
                 ]);
             } else if (draggableId === 'QWithTextAndImgAns') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QWithTextAndImgAns-${Date.now()}`, type: 'QWithTextAndImgAns', inputValue: '', uploadedFile: null }
+                    { id: `QWithTextAndImgAns-${Date.now()}`, type: 'QWithTextAndImgAns', inputValue: '' },
                 ]);
             } else if (draggableId === 'QWithImgAnswer') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QWithImgAnswer-${Date.now()}`, type: 'QWithImgAnswer', inputValue: '', uploadedFile: null }
+                    { id: `QWithImgAnswer-${Date.now()}`, type: 'QWithImgAnswer', inputValue: '' },
                 ]);
             } else if (draggableId === 'QWithMultiAnswer') {
-                setFormElements(prev => [
+                setFormElements((prev) => [
                     ...prev,
-                    { id: `QWithMultiAnswer-${Date.now()}`, type: 'QWithMultiAnswer', inputValue: '', uploadedFile: null }
+                    { id: `QWithMultiAnswer-${Date.now()}`, type: 'QWithMultiAnswer', inputValue: '' },
+                ]);
+            } else if (draggableId === 'PickAnswerQuestion') {
+                setFormElements((prev) => [
+                    ...prev,
+                    {
+                        id: `PickAnswerQuestion-${Date.now()}`,
+                        type: 'PickAnswerQuestion',
+                        inputValue: '',
+                        answers: [''],
+                    },
+                ]);
+            } else if (draggableId === 'DropdownSelectQuestion') { 
+                setFormElements((prev) => [
+                    ...prev,
+                    {
+                        id: `DropdownSelectQuestion-${Date.now()}`,
+                        type: 'DropdownSelectQuestion',
+                        inputValue: '',
+                        options: [],
+                    },
                 ]);
             }
         }
     };
 
     const handleRemoveElement = (id) => {
-        setFormElements(prev => prev.filter(element => element.id !== id));
+        setFormElements((prev) => prev.filter((element) => element.id !== id));
+    };
+
+    const handleInputChange = (id, newValue) => {
+        setIsDisabled(false);
+        setFormElements((prev) =>
+            prev.map((element) =>
+                element.id === id ? { ...element, inputValue: newValue } : element
+            )
+        );
+    };
+
+    const handleAnswersChange = (id, newAnswers) => {
+        setFormElements((prev) =>
+            prev.map((element) =>
+                element.id === id ? { ...element, answers: newAnswers } : element
+            )
+        );
+    };
+
+    const handleFileChange = (id, newFile) => {
+        setFormElements((prev) =>
+            prev.map((element) =>
+                element.id === id ? { ...element, uploadedFile: newFile } : element
+            )
+        );
+    };
+
+    const handleOptionsChange = (id, newOptions) => {
+        setFormElements((prev) =>
+            prev.map((element) =>
+                element.id === id ? { ...element, options: newOptions } : element
+            )
+        );
     };
 
     const renderFormElement = (element) => {
@@ -159,26 +222,28 @@ const AddElements = () => {
                         readOnly={false}
                     />
                 );
+            case 'PickAnswerQuestion':
+                return (
+                    <PickAnswerQuestion
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                        answers={element.answers}
+                        setAnswers={(newAnswers) => handleAnswersChange(element.id, newAnswers)}
+                    />
+                );
+            case 'DropdownSelectQuestion':
+                return (
+                    <DropdownSelectQuestion
+                        inputValue={element.inputValue}
+                        setInputValue={(value) => handleInputChange(element.id, value)}
+                        options={element.options || []}
+                        setOptions={(newOptions) => handleOptionsChange(element.id, newOptions)}
+                        isPreview={false}
+                    />
+                );
             default:
                 return null;
         }
-    };
-
-    const handleInputChange = (id, newValue) => {
-        setIsDisabled(false);
-        setFormElements(prev =>
-            prev.map(element =>
-                element.id === id ? { ...element, inputValue: newValue } : element
-            )
-        );
-    };
-
-    const handleFileChange = (id, newFile) => {
-        setFormElements(prev =>
-            prev.map(element =>
-                element.id === id ? { ...element, uploadedFile: newFile } : element
-            )
-        );
     };
 
     const handleFileUpload = async (file) => {
@@ -198,11 +263,14 @@ const AddElements = () => {
         const mappedQuestions = await Promise.all(
             formElements.map(async (element) => {
                 const uploadedFileUrl = await handleFileUpload(element.uploadedFile);
-                return {
+                const questionData = {
                     type: element.type,
                     inputValue: element.inputValue,
-                    ...(uploadedFileUrl && { uploadedFileUrl })
+                    ...(element.options && { options: element.options }),
+                    ...(element.answers && { answers: element.answers }),
+                    ...(uploadedFileUrl && { uploadedFileUrl }),
                 };
+                return questionData;
             })
         );
 
@@ -213,20 +281,17 @@ const AddElements = () => {
             toast.success('Form was updated successfully');
             setIsDisabled(true);
 
-
             const websiteURL = window.location.origin;
             const formId = response.data.form._id;
             const link = `${websiteURL}/AnswerForm/${formId}`;
             setShareLink(link);
 
             setShowModal(true);
-
-            // setTimeout(() => {
-            //     navigate('/TabsPage');
-            // }, 1500);
         } catch (error) {
-            console.error("Error updating form:", error);
-            toast.error("Error updating form: " + (error.response?.data?.message || error.message));
+            console.error('Error updating form:', error);
+            toast.error(
+                'Error updating form: ' + (error.response?.data?.message || error.message)
+            );
         }
     };
 
@@ -242,16 +307,20 @@ const AddElements = () => {
                                 renderFormElement={renderFormElement}
                             />
                         </div>
-                        <div className="col-6 d-flex justify-content-center align-content-center flex-wrap" style={{ height: "90vh" }}>
-                            <div className='overflow-x-hidden p-1 rounded-2'
+                        <div
+                            className="col-6 d-flex justify-content-center align-content-center flex-wrap"
+                            style={{ height: '90vh' }}
+                        >
+                            <div
+                                className="overflow-x-hidden p-1 rounded-2"
                                 style={{
-                                    width: "70%",
-                                    height: "85vh",
-                                    backgroundColor: "#acacac87",
-                                    borderStyle: "dashed",
-                                    borderColor: "#acacac87",
-                                    overflowY: "scroll",
-                                    position: "relative"
+                                    width: '70%',
+                                    height: '85vh',
+                                    backgroundColor: '#acacac87',
+                                    borderStyle: 'dashed',
+                                    borderColor: '#acacac87',
+                                    overflowY: 'scroll',
+                                    position: 'relative',
                                 }}
                             >
                                 <DraggableLibrary />
@@ -271,7 +340,7 @@ const AddElements = () => {
                 </div>
             </DragDropContext>
 
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+            <Modal show={showModal} onHide={handleCloseModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Share Your Form</Modal.Title>
                 </Modal.Header>
@@ -288,7 +357,14 @@ const AddElements = () => {
                                     toast.success('Link copied to clipboard!');
                                 }}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    className="bi bi-clipboard"
+                                    viewBox="0 0 16 16"
+                                >
                                     <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
                                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
                                 </svg>
@@ -296,12 +372,13 @@ const AddElements = () => {
                         </div>
                     </Form.Group>
                     <div className="d-flex justify-content-around">
-                        {/* WhatsApp Share */}
-                        <button className="whatsapp-btn"
-                            style={{ backgroundColor: "#00d757" }}
-                            variant="success"
+                        <button
+                            className="whatsapp-btn"
+                            style={{ backgroundColor: '#00d757' }}
                             onClick={() => {
-                                const whatsappURL = `https://wa.me/?text=${encodeURIComponent(shareLink)}`;
+                                const whatsappURL = `https://wa.me/?text=${encodeURIComponent(
+                                    shareLink
+                                )}`;
                                 window.open(whatsappURL, '_blank');
                             }}
                         >
@@ -312,41 +389,57 @@ const AddElements = () => {
                             </div>
                         </button>
 
-                        {/* Email Share */}
                         <button
                             className="whatsapp-btn text-black"
-                            style={{ backgroundColor: "#000" }}
-                            variant="primary"
+                            style={{ backgroundColor: '#000' }}
                             onClick={() => {
                                 const subject = encodeURIComponent('Check out this form');
-                                const body = encodeURIComponent(`I would like you to answer this form: ${shareLink}`);
+                                const body = encodeURIComponent(
+                                    `I would like you to answer this form: ${shareLink}`
+                                );
                                 const mailtoURL = `mailto:?subject=${subject}&body=${body}`;
                                 window.open(mailtoURL, '_blank');
                             }}
                         >
-                            <div className="whatsapp-sign" style={{ color: "white" }}>
+                            <div className="whatsapp-sign" style={{ color: 'white' }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="52 42 88 66">
-                                    <path fill="#4285f4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" />
-                                    <path fill="#34a853" d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" />
-                                    <path fill="#fbbc04" d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2" />
-                                    <path fill="#ea4335" d="M72 74V48l24 18 24-18v26L96 92" />
-                                    <path fill="#c5221f" d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" />
+                                    <path
+                                        fill="#4285f4"
+                                        d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6"
+                                    />
+                                    <path
+                                        fill="#34a853"
+                                        d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15"
+                                    />
+                                    <path
+                                        fill="#fbbc04"
+                                        d="M120 48v26l20-15v-8c0-7.42-8.47-11.65-14.4-7.2"
+                                    />
+                                    <path
+                                        fill="#ea4335"
+                                        d="M72 74V48l24 18 24-18v26L96 92"
+                                    />
+                                    <path
+                                        fill="#c5221f"
+                                        d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2"
+                                    />
                                 </svg>
                             </div>
                         </button>
-
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="btn btn-danger" onClick={() => {
-                        setShowModal(false);
-                        navigate('/tabspage');
-                    }}>
+                    <Button
+                        variant="btn btn-danger"
+                        onClick={() => {
+                            setShowModal(false);
+                            navigate('/tabspage');
+                        }}
+                    >
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
-
         </>
     );
 };
