@@ -49,7 +49,9 @@
 - **Firebase:** Provides authentication and real-time updates.
 - **Validator.js:** Ensures data validation.
 
+
 ---
+
 
 ## **Key Features**
 
@@ -61,3 +63,11 @@
 - **Dashboard:** Manage all forms with a central command center for quick navigation and actions.
 
 ---
+![HomePage](https://github.com/user-attachments/assets/1e577538-af9f-4145-bcda-0fcfd4449629)
+![SignUp](https://github.com/user-attachments/assets/3c46d1ec-f1af-43fa-a436-d4febdae7a02)
+![Forms page](https://github.com/user-attachments/assets/a986e8e1-41cf-40cf-8861-5bf0b92a0588)
+![Answers](https://github.com/user-attachments/assets/69614629-b4d7-4c14-8d81-52f7658ab583)
+![ViewAnswer](https://github.com/user-attachments/assets/e6ffc183-a417-4ce4-8737-e295575c13be)
+
+
+
