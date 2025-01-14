@@ -1,4 +1,4 @@
-# **Formulate / FormFlow**
+# **Formulate**
 
 **Formulate** is a unique project that blends the dynamic capabilities of **Google Forms** and **Trello** into a single collaborative platform. It allows users to design forms, organize them with drag-and-drop functionality, and foster teamwork through commenting and task-tracking features. Whether you're a form creator or recipient, **Formulate** provides an intuitive, efficient experience for managing and sharing forms.
 
